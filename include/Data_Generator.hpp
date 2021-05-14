@@ -10,8 +10,7 @@
 #include <vector>
 #include <array>
 #include <optional>
-
-const char CMYK[4] = {'C', 'M', 'Y', 'K'};
+#include "Constants.hpp"
 
 class DataGenerator{
 public:

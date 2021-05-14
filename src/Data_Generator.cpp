@@ -11,6 +11,7 @@ void DataGenerator::generate_collection(size_t length, std::array<std::pair<doub
 
     for(size_t i = 0; i < length; ++i){
         double value = valGen(randomEngine);
+        valGen.reset();
         if(value < cmykProb[0].first)
             dataVector.push_back(cmykProb[0].second);
         else if(value < cmykProb[1].first + cmykProb[0].first)
@@ -121,8 +122,8 @@ std::vector<char> DataGenerator::substring_generator(size_t length, double proba
 std::vector<char> DataGenerator::no_substring_generator(size_t length) {
     double cProb, mProb, yProb, kProb;
     std::mt19937_64 randomEngine(randomDevice());
-    std::uniform_real_distribution<> cGen(0.0, 1.0);
-    cProb = cGen(randomEngine);
+    std::uniform_real_distribution<> cGen(0, 1.0);
+    cProb = 0.0;
     std::uniform_real_distribution<> mGen(0, 1.0 - cProb);
     mProb = mGen(randomEngine);
     std::uniform_real_distribution<> yGen(0, 1.0 - cProb - mProb);
@@ -139,27 +140,37 @@ std::vector<char> DataGenerator::no_substring_generator(size_t length) {
     std::sort(cmykProbTmp.begin(), cmykProbTmp.end(), [](std::pair<double, char> a, std::pair<double, char> b){return a.first < b.first;});
 
     std::vector<char> dataVector;
-    generate_collection(1, cmykProb, dataVector);
+    generate_collection(1, cmykProbTmp, dataVector);
 
-    for(size_t i = 1; i < length; ++i){
-        switch(dataVector[i - 1]){
+    for(size_t i = 0; i < length - 1; ++i){
+        auto it = std::min_element(cmykProb.begin(), cmykProb.end(), [](std::pair<double, char> a, std::pair<double, char> b){return a.first < b.first;});
+        switch(dataVector[i]){
             case 'C':
-                cmykProbTmp[0].first = cmykProb[0].first;
-                cmykProbTmp[1].first = 0.0;
+                if(it->second != 'M'){
+                    it->first = cmykProb[1].first;
+                    cmykProb[1].first = 0.0;
+                }
                 break;
             case 'M':
-                cmykProbTmp[1].first = cmykProb[1].first;
-                cmykProbTmp[2].first = 0.0;
+                if(it->second != 'Y'){
+                    it->first = cmykProb[2].first;
+                    cmykProb[2].first = 0.0;
+                }
                 break;
             case 'Y':
-                cmykProbTmp[2].first = cmykProb[2].first;
-                cmykProbTmp[3].first = 0.0;
+                if(it->second != 'K'){
+                    it->first = cmykProb[3].first;
+                    cmykProb[3].first = 0.0;
+                }
                 break;
             case 'K':
-                cmykProbTmp[3].first = cmykProb[3].first;
-                cmykProbTmp[0].first = 0.0;
+                if(it->second != 'C'){
+                    it->first = cmykProb[0].first;
+                    cmykProb[0].first = 0.0;
+                }
                 break;
         }
+        cmykProbTmp = cmykProb;
         std::sort(cmykProbTmp.begin(), cmykProbTmp.end(), [](std::pair<double, char> a, std::pair<double, char> b){return a.first < b.first;});
         generate_collection(1, cmykProbTmp, dataVector);
     }

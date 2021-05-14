@@ -9,30 +9,35 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/bin)
 set(CMAKE_EXPORT_COMPILE_COMMANDS)
 
 set(EXECUTABLE_NAME "AAL_CMYK")
-include_directories(${CMAKE_HOME_DIRECTORY}/include/)
+include_directories(${CMAKE_HOME_DIRECTORY}/include)
 add_executable(${EXECUTABLE_NAME} ${TARGET_SRC})
 
 if(MSVC)
     target_compile_options(${EXECUTABLE_NAME} PRIVATE /W4)
 else()
-    target_compile_options(${EXECUTABLE_NAME} PRIVATE -Wall -Wextra -pedantic -Ofast)
+    target_compile_options(${EXECUTABLE_NAME} PRIVATE -Wall -Wextra -pedantic)
 endif()
 
-# set(BUILD_TESTS True) #Set to "True" for test for building tests
-# if(BUILD_TESTS)
-#     message("Building tests.")
-#     list(FILTER TARGET_SRC EXCLUDE REGEX /*/main.cpp)
-#     if (UNIX)
-#         find_package(Boost COMPONENTS unit_test_framework REQUIRED)
-#     endif ()
+#Add tests -> building program for testing with boost
+set(BUILD_TESTS True) #Set to "True" for test for building tests
+if(BUILD_TESTS)
+    message("Building tests.")
+    list(FILTER TARGET_SRC EXCLUDE REGEX /*/main.cpp)
+    if (UNIX)
+        find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+    endif ()
 
-#     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/build)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/build)
 
-#     add_executable(tests ${CMAKE_HOME_DIRECTORY}/tests/Tests.cpp ${TARGET_SRC} tests/Tests.cpp)
+    add_executable(tests ${CMAKE_HOME_DIRECTORY}/tests/UnitTests.cpp ${TARGET_SRC} tests/UnitTests.cpp)
 
-#     add_test(UnitTest tests)
-#     enable_testing()
-# endif()
+    if (UNIX)
+        target_link_libraries(tests ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+    endif ()
+
+    add_test(UnitTest tests)
+    enable_testing()
+endif()
 
 # set (BUILD_DOCS True) #set TRUE if you want to build docs
 # if(BUILD_DOCS)
