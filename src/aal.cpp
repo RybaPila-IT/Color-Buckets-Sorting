@@ -14,7 +14,7 @@ char* getCmdOption(char ** begin, char ** end, const std::string & option)
     {
         return *itr;
     }
-    return 0;
+    return nullptr;
 }
 
 bool cmdOptionExists(char** begin, char** end, const std::string& option)
@@ -26,31 +26,90 @@ int main(int argc, char * argv[])
 {
     if(argc < 2){
         cout << "Too few arguments" << endl;
+        return 0;
     }
-    if(cmdOptionExists(argv, argv + argc, "-interactive"))
+    /*
+     * interactive mode
+     * ./aal_cmyk -i
+     */
+    if(cmdOptionExists(argv, argv + argc, "-i"))
     {
-        std::cout << "interactive works" << std::endl;
+        cout << "interactive works" << endl;
     }
-    else if(cmdOptionExists(argv, argv + argc, "-instance"))
+    /*
+    * instance mode
+    * ./aal_cmyk -s <rozmiar problemu> <tryb generatora> -f <plik wynikowy>
+    */
+    else if(cmdOptionExists(argv, argv + argc, "-s"))
     {
-        std::cout << "instance works" << std::endl;
+        auto problemSize_ = argv[2];
+        auto generatorMode_ = argv[3];
+        char *filename_ = getCmdOption(argv, argv + argc, "-f");
+
+        int problemSize = atoi(problemSize_);
+        if(problemSize < 0){
+            cout << "Invalid problem size: " << problemSize << endl;
+            return 0;
+        }
+
+        //wywołanie generatora
+        //wywołanie algorytmu
+
+        if(filename_){
+            //Zapis do pliku
+        }
+        else{
+            cout << "Output file was not specified" << endl;
+        }
     }
-    else if(cmdOptionExists(argv, argv + argc, "-testing"))
+    /*
+    * testing mode
+    * ./aal_cmyk -t <rozmiar problemu> <krok> <liczba iteracji> <tryb generatora> -f <plik wynikowy>
+    */
+    else if(cmdOptionExists(argv, argv + argc, "-t"))
     {
-        std::cout << "testing works" << std::endl;
+        auto problemSize_ = argv[2];
+        auto step_ = argv[3];
+        auto iterations_ = argv[4];
+        auto generatorMode_ = argv[5];
+        char *filename_ = getCmdOption(argv, argv + argc, "-f");
+
+        int problemSize = atoi(problemSize_);
+        int step = atoi(step_);
+        int iterations = atoi(iterations_);
+
+        if(problemSize < 0){
+            cout << "Invalid problem size: " << problemSize << endl;
+            return 0;
+        }
+        if(step < 0){
+            cout << "Invalid step: " << step << endl;
+            return 0;
+        }
+        if(iterations < 0){
+            cout << "Invalid iterations: " << iterations << endl;
+            return 0;
+        }
+
+        if(filename_){
+            //otwarcie pliku
+        }
+        else{
+            cout << "Output file was not specified" << endl;
+            return 0;
+        }
+
+        for(int i = 0; i < iterations; ++i){
+            //wywołanie generatora
+            //wywołanie algorytmu
+            //zapis do pliku
+        }
     }
     else if(cmdOptionExists(argv, argv + argc, "-h"))
     {
-        std::cout << "h works" << std::endl;
+        cout << "Interactive mode:  " << "./aal_cmyk -i" << endl;
+        cout << "Instance mode:     " << "./aal_cmyk -s <problem size> <generator mode> -f <output file>" << endl;
+        cout << "Testing mode:      " << "./aal_cmyk -t <problem size> <step> <number of iterations> <generator mode> -f <output file>" << endl;
     }
-
-    char * filename = getCmdOption(argv, argv + argc, "-f");
-
-    if (filename)
-    {
-        // Do interesting things
-        // ...
-    }
-
     return 0;
 }

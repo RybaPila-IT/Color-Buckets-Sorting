@@ -6,10 +6,5 @@
 #define AAL_CMYK_CONSTANTS_HPP
 
 const char CMYK[4] = {'C', 'M', 'Y', 'K'};
-enum Mode{
-    INTERACTIVE,
-    INSTANCE,
-    TESTING
-};
 
 #endif //AAL_CMYK_CONSTANTS_HPP
