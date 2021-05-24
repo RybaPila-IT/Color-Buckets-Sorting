@@ -5,7 +5,7 @@
 #include <boost/test/test_tools.hpp>
 #include <iostream>
 
-#include "Data_Generator.hpp"
+#include "data_generator.hpp"
 
 BOOST_AUTO_TEST_CASE(Data_Generator_Test){
     std::cout << "---DataGenerator test---" << std::endl;

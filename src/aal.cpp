@@ -1,7 +1,7 @@
 //
 // Created by swirta on 13.05.2021.
 //
-#include "Data_Generator.hpp"
+#include "data_generator.hpp"
 #include <iostream>
 #include <algorithm>
 

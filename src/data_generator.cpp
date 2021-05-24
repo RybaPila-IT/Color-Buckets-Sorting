@@ -1,7 +1,7 @@
 //
 // Created by swirta on 13.05.2021.
 //
-#include "Data_Generator.hpp"
+#include "data_generator.hpp"
 #include <algorithm>
 
 void DataGenerator::generate_collection(size_t length, std::array<std::pair<double, char>, 4> cmykProb,

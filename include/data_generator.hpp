@@ -10,7 +10,7 @@
 #include <vector>
 #include <array>
 #include <optional>
-#include "Constants.hpp"
+#include "constants.hpp"
 
 class DataGenerator{
 public:
