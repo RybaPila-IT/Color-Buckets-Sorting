@@ -20,6 +20,7 @@ endif()
 
 #Add tests -> building program for testing with boost
 set(BUILD_TESTS True) #Set to "True" for test for building tests
+
 if(BUILD_TESTS)
     message("Building tests.")
     list(FILTER TARGET_SRC EXCLUDE REGEX /*/main.cpp)

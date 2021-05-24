@@ -18,6 +18,7 @@ public:
     std::optional<std::vector<char>> parametric_generator(size_t length, double cProb, double mProb, double yProb, double kProb);
     std::vector<char> substring_generator(size_t length, double probability);
     std::vector<char> no_substring_generator(size_t length);
+    std::vector<char> permutation_generator(size_t length, size_t changes);
 
 private:
     void generate_collection(size_t length, std::array<std::pair<double, char>, 4> cmykProb, std::vector<char>& dataVector);

@@ -1,8 +1,6 @@
 //
 // Created by swirta on 14.05.2021.
 //
-#define BOOST_TEST_MODULE ClassTest
-
 #include <boost/test/unit_test.hpp>
 #include <boost/test/test_tools.hpp>
 #include <iostream>
