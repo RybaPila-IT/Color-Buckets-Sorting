@@ -5,8 +5,6 @@
 #include <iostream>
 #include <algorithm>
 
-#include "robot.h"
-
 using namespace std;
 
 char* getCmdOption(char ** begin, char ** end, const std::string & option)
@@ -24,26 +22,8 @@ bool cmdOptionExists(char** begin, char** end, const std::string& option)
     return std::find(begin, end, option) != end;
 }
 
-
-void no_args_testing() {
-
-    std::vector<char> colors({'C', 'M', 'Y', 'K', 'K', 'Y', 'C'});
-    InstructionList list(std::vector<uint>({0, 1}));
-
-    Robot::sort(colors, list);
-
-    for (auto& c : colors)
-        std::cout << c << " ";
-
-    std::cout << std::endl;
-}
-
-
 int main(int argc, char * argv[])
 {
-
-    no_args_testing();
-
     if(argc < 2){
         cout << "Too few arguments" << endl;
         return 0;
