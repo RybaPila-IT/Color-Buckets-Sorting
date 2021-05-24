@@ -2,6 +2,7 @@
 // Created by swirta on 13.05.2021.
 //
 #include "data_generator.hpp"
+#include "alg_sort.hpp"
 #include <iostream>
 #include <algorithm>
 
@@ -28,6 +29,10 @@ int main(int argc, char * argv[])
         cout << "Too few arguments" << endl;
         return 0;
     }
+    Graph graph;
+    vector<char> data = {'C', 'Y', 'K', 'M', 'K', 'C'};
+    graph.gen_graph(data);
+
     /*
      * interactive mode
      * ./aal_cmyk -i

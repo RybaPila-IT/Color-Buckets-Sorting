@@ -30,7 +30,7 @@ if(BUILD_TESTS)
 
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/build)
 
-    add_executable(tests ${CMAKE_HOME_DIRECTORY}/tests/UnitTests.cpp ${TARGET_SRC} tests/unit_tests.cpp)
+    add_executable(tests ${CMAKE_HOME_DIRECTORY}/tests/unit_tests.cpp ${TARGET_SRC} tests/unit_tests.cpp)
 
     if (UNIX)
         target_link_libraries(tests ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
