@@ -184,3 +184,71 @@ InstructionList universal_sort(const std::vector<char>& colors) {
 }
 
 
+namespace {
+
+    void find_longest_substring(const std::vector<char>& colors, uint l_end, uint patt_ptr, uint& substr_b, uint& substr_l) {
+
+        substr_b = l_end;
+        substr_l = 0;
+
+        bool set = false;
+        uint curr_substr_b = l_end;
+        uint curr_substr_l = 0;
+        uint curr_patt_ptr = 0;
+
+        for (uint i = l_end + PATTERN_LEN - 1; i < colors.size(); i++) {
+            if (colors[i] == PATTERN[(patt_ptr + curr_patt_ptr) % 4]) {
+                if (!set) {
+                    curr_substr_b = i;
+                    set = true;
+                }
+                curr_substr_l++;
+                curr_patt_ptr++;
+            } else {
+
+                substr_l = std::max(substr_l, curr_substr_l);
+
+                if (substr_l == curr_substr_l)
+                    substr_b = curr_substr_b;
+
+                curr_substr_b = i;
+                curr_substr_l = 0;
+                curr_patt_ptr = 0;
+                set = false;
+
+            }
+        }
+
+    }
+
+
+
+}
+
+
+InstructionList substrings_sort(const std::vector<char>& colors) {
+
+    InstructionList list;
+    std::vector<char> colors_(colors.begin(), colors.end());
+
+    const uint substring_threshold = 5;
+
+    uint l_end = 0, patt_ptr = 0;
+    uint substr_b, substr_l;
+
+    do {
+
+        find_longest_substring(colors, l_end, patt_ptr, substr_b, substr_l);
+
+        if (substr_l < substring_threshold)
+            break;
+
+
+    } while (l_end < colors_.size() - substring_threshold);
+
+
+
+
+    return list;
+}
+

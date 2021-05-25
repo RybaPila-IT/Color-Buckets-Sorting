@@ -32,8 +32,8 @@ private:
     std::vector<Node> graphNodes;
 };
 
-
 InstructionList universal_sort(const std::vector<char>& colors);
+InstructionList substrings_sort(const std::vector<char>& colors);
 
 
 
