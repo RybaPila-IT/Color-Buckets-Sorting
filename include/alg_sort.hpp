@@ -28,7 +28,8 @@ public:
     void gen_graph(std::vector<char> &dataVector);
     void gen_tree(Node &node);
     bool find_node(Node &parent, Node &node);
-    bool perform_search(size_t length);
+    bool find_with_trace(Node &parent, Node &node, std::deque<size_t> &instructionList);
+    std::vector<size_t> perform_search(size_t length);
 
     std::vector<Node> node_permutation(Node &node);
     Node root;

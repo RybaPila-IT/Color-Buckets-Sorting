@@ -23,6 +23,7 @@ std::vector<Node> Graph::node_permutation(Node &node) {
                 break;
 
             Node tmp = node;
+            tmp.index = i;
             tmp.value.push_back(node.value[i]);
             tmp.value.push_back(node.value[i + 1]);
             tmp.value.push_back(node.value[i + 2]);
@@ -52,6 +53,7 @@ void Graph::gen_graph(std::vector<char> &dataVector) {
         data.push_back(elem);
     }
     root = Node(data);
+    root.index = 0;
     gen_tree(root);
 }
 
@@ -64,7 +66,21 @@ void Graph::gen_tree(Node &node) {
         gen_tree(child);
 }
 
-bool Graph::perform_search(size_t length) {
+bool Graph::find_with_trace(Node &parent, Node &node, std::deque<size_t> &instructionList) {
+    if(parent.value == node.value){
+        instructionList.push_front(parent.index);
+        return true;
+    }
+    for(auto &node_ : parent.childes){
+        if(find_with_trace(node_, node, instructionList)){
+            instructionList.push_front(parent.index);
+            return true;
+        }
+    }
+    return false;
+}
+
+std::vector<size_t> Graph::perform_search(size_t length) {
     DataGenerator dataGenerator;
     std::deque<char> data;
     std::vector<char> dataVector = dataGenerator.substring_generator(length, 1.0);
@@ -72,5 +88,13 @@ bool Graph::perform_search(size_t length) {
         data.push_back(elem);
     }
     Node node = Node(data);
-    return find_node(root, node);
+    std::deque<size_t> instructionList;
+    std::vector<size_t> retVec;
+    if(find_with_trace(root, node, instructionList)){
+        instructionList.pop_front();
+        for(auto &elem : instructionList){
+            retVec.push_back(elem);
+        }
+    }
+    return retVec;
 }
