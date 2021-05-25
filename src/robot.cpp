@@ -3,7 +3,9 @@
 //
 #include <stdexcept>
 #include <utility>
+
 #include "robot.h"
+#include "constants.hpp"
 
 InstructionList::InstructionList(): current_instruction(0), instructions() {}
 
@@ -25,16 +27,17 @@ bool InstructionList::instruction_left() const {
     return current_instruction < instructions.size();
 }
 
+uint InstructionList::size() const {
+    return instructions.size();
+}
+
 void Robot::sort(std::vector<char> &colors, InstructionList &instructions) {
     while (instructions.instruction_left()) {
         auto idx = instructions.get_next_instruction();
 
-        for (uint i = 0; i < 4; i++)
+        for (uint i = 0; i < PATTERN_LEN; i++)
             colors.push_back(colors[idx + i]);
 
-        auto lower_bound = colors.begin() + idx;
-        auto upper_bound = colors.begin() + idx + 4;
-
-        colors.erase(lower_bound, upper_bound);
+        colors.erase(colors.begin() + idx, colors.begin() + idx + PATTERN_LEN);
     }
 }
