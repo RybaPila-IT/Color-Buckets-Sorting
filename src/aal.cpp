@@ -29,15 +29,15 @@ void no_args_run() {
     //std::vector<char> colors({'C', 'Y', 'Y','M', 'C', 'M', 'Y', 'K'});
     DataGenerator generator;
     std::vector<char> colors;
-    colors = generator.parametric_generator(200000, 0.25, 0.25, 0.25, 0.25).value();
+    colors = generator.parametric_generator(200, 0.25, 0.25, 0.25, 0.25).value();
     //colors = generator.random_generator(200);
 
     auto list = universal_sort(colors);
     std::cout << "List len: " << list.size() << std::endl;
     Robot::sort(colors, list);
 
-    //for (auto& c : colors)
-      //  std::cout << c << " ";
+    for (auto& c : colors)
+        std::cout << c << " ";
 
     std::cout << std::endl;
 
