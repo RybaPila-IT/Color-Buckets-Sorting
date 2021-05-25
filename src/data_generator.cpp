@@ -180,16 +180,18 @@ std::vector<char> DataGenerator::no_substring_generator(size_t length) {
 std::vector<char> DataGenerator::permutation_generator(size_t length, size_t changes) {
     std::vector<char> dataVector = substring_generator(length, 1.0);
     std::mt19937_64 randomEngine(randomDevice());
-    std::uniform_int_distribution<size_t> indexGen(0, length - 1);
+    std::uniform_int_distribution<size_t> indexGen(0, length - 4);
 
     for(size_t i = 0; i < changes; ++i){
-        size_t indexA, indexB;
-        do{
-            indexA = indexGen(randomEngine);
-            indexGen.reset();
-            indexB = indexGen(randomEngine);
-        }while(indexA == indexB);
-        std::swap(dataVector[indexA], dataVector[indexB]);
+        size_t index;
+        index = indexGen(randomEngine);
+        indexGen.reset();
+
+        for(int j = 0; j < 4; ++j)
+            dataVector.insert(dataVector.begin() + index + j, dataVector[dataVector.size() - 4 + j]);
+
+        for(int j = 0; j < 4; ++j)
+            dataVector.pop_back();
     }
     return dataVector;
 }
