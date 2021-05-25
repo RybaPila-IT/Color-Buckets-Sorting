@@ -23,8 +23,6 @@ public:
     [[nodiscard]] bool instruction_left() const;
 };
 
-
-
 class Robot {
 
 public:

@@ -7,15 +7,17 @@
 
 #include <vector>
 #include <deque>
-#include <memory>
+#include <optional>
 
 class Node{
 public:
+    explicit Node(std::deque<char> value_);
+    Node() = default;
+
     bool operator==(const Node &right) const{
         return this->value == right.value;
     }
-    Node(std::deque<char> value_);
-    Node();
+    static bool equal(const Node &left, const Node &right, uint unordered);
 
     size_t index;
     std::deque<char> value;
@@ -28,10 +30,11 @@ public:
     void gen_graph(std::vector<char> &dataVector);
     void gen_tree(Node &node);
     bool find_node(Node &parent, Node &node);
-    bool find_with_trace(Node &parent, Node &node, std::deque<size_t> &instructionList);
-    std::vector<size_t> perform_search(size_t length);
-
     std::vector<Node> node_permutation(Node &node);
+
+    bool find_with_trace(Node &parent, Node &node, uint unordered, std::deque<size_t> &instructions);
+    std::optional<std::deque<size_t>> perform_search(size_t length, uint unordered);
+
     Node root;
 };
 

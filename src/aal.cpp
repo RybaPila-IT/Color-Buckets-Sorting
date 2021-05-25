@@ -3,6 +3,7 @@
 //
 #include "data_generator.hpp"
 #include "alg_sort.hpp"
+#include "robot.h"
 #include <iostream>
 #include <algorithm>
 
@@ -29,10 +30,6 @@ int main(int argc, char * argv[])
         cout << "Too few arguments" << endl;
         return 0;
     }
-    Graph graph;
-    vector<char> data = {'Y', 'C', 'M', 'C', 'M', 'K'};
-    graph.gen_graph(data);
-    auto test = graph.perform_search(data.size());
     /*
      * interactive mode
      * ./aal_cmyk -i
