@@ -1,31 +1,18 @@
 //
 // Created by swirta on 24.05.2021.
 //
-
 #include "alg_sort.hpp"
+#include "data_generator.hpp"
 
 Node::Node(std::deque<char> value_) : value(value_) {}
+Node::Node() {}
 
-bool Graph::add_node_to_open_set(std::deque<Node> &openSet, Node &currentNode, Node &newNode) {
-    bool equal = false;
-    bool added = false;
-    for(auto& e : currentNode.edges){
-        if(graphNodes[e] == newNode)
-            return false;
+bool Graph::add_node(Node &currentNode, Node &newNode) {
+    if(!find_node(root, newNode)){
+        currentNode.childes.push_back(std::move(newNode));
+        return true;
     }
-    for(size_t i = 0; i< graphNodes.size(); ++i){
-        if(graphNodes[i] == newNode){
-            equal = true;
-            currentNode.edges.push_back(i);
-        }
-    }
-    if(!equal){
-        auto index = graphNodes.empty() ? 0 : graphNodes.size() - 1;
-        openSet.emplace_back(std::move(newNode));
-        currentNode.edges.push_back(index);
-        added = true;
-    }
-    return added;
+    return false;
 }
 
 std::vector<Node> Graph::node_permutation(Node &node) {
@@ -49,24 +36,41 @@ std::vector<Node> Graph::node_permutation(Node &node) {
     return nodeVector;
 }
 
+bool Graph::find_node(Node &parent, Node &node) {
+    if(parent.value == node.value)
+        return true;
+    for(auto &node_ : parent.childes){
+        if(find_node(node_, node))
+            return true;
+    }
+    return false;
+}
+
 void Graph::gen_graph(std::vector<char> &dataVector) {
     std::deque<char> data;
     for(auto &elem : dataVector){
         data.push_back(elem);
     }
-
-    std::deque<Node> openSet;
-    openSet.emplace_back(Node(data));
-    while(!openSet.empty()){
-        std::vector<Node> nodeVector = node_permutation(openSet.front());
-        for(auto& potNode : nodeVector) {
-            if(add_node_to_open_set(openSet, openSet.front(), potNode)){
-                openSet.push_back(potNode);
-                graphNodes.emplace_back(std::move(openSet.front()));
-                openSet.pop_front();
-            }
-        }
-    }
+    root = Node(data);
+    gen_tree(root);
 }
 
+void Graph::gen_tree(Node &node) {
+    std::vector<Node> nodeVector = node_permutation(node);
+    for(auto& potNode : nodeVector) {
+        add_node(node, potNode);
+    }
+    for(auto &child : node.childes)
+        gen_tree(child);
+}
 
+bool Graph::perform_search(size_t length) {
+    DataGenerator dataGenerator;
+    std::deque<char> data;
+    std::vector<char> dataVector = dataGenerator.substring_generator(length, 1.0);
+    for(auto &elem : dataVector){
+        data.push_back(elem);
+    }
+    Node node = Node(data);
+    return find_node(root, node);
+}

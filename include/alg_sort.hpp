@@ -7,28 +7,31 @@
 
 #include <vector>
 #include <deque>
+#include <memory>
 
 class Node{
 public:
     bool operator==(const Node &right) const{
         return this->value == right.value;
     }
-
     Node(std::deque<char> value_);
+    Node();
 
+    size_t index;
     std::deque<char> value;
-    std::vector<size_t> edges;
+    std::vector<Node> childes;
 };
 
 class Graph{
 public:
-    bool add_node_to_open_set(std::deque<Node> &openSet, Node &currentNode, Node &newNode);
+    bool add_node(Node &currentNode, Node &newNode);
     void gen_graph(std::vector<char> &dataVector);
+    void gen_tree(Node &node);
+    bool find_node(Node &parent, Node &node);
+    bool perform_search(size_t length);
 
     std::vector<Node> node_permutation(Node &node);
-
-private:
-    std::vector<Node> graphNodes;
+    Node root;
 };
 
 #endif //AAL_CMYK_ALG_SORT_HPP

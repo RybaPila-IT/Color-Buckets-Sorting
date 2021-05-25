@@ -30,9 +30,9 @@ int main(int argc, char * argv[])
         return 0;
     }
     Graph graph;
-    vector<char> data = {'C', 'Y', 'K', 'M', 'K', 'C'};
+    vector<char> data = {'Y', 'K', 'C', 'M', 'C', 'M'};
     graph.gen_graph(data);
-
+    cout << graph.perform_search(data.size()) << endl;
     /*
      * interactive mode
      * ./aal_cmyk -i
