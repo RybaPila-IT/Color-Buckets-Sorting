@@ -2,7 +2,9 @@
 // Created by swirta on 24.05.2021.
 //
 
+#include <iostream>
 #include "alg_sort.hpp"
+#include "constants.hpp"
 
 Node::Node(std::deque<char> value_) : value(value_) {}
 
@@ -67,6 +69,120 @@ void Graph::gen_graph(std::vector<char> &dataVector) {
             }
         }
     }
+}
+
+namespace {
+
+    void robot_move(std::vector<char>& colors, uint idx) {
+
+        for (uint i = 0; i < PATTERN_LEN; i++)
+            colors.push_back(colors[idx + i]);
+
+        colors.erase(colors.begin() + idx, colors.begin() + idx + PATTERN_LEN);
+    }
+
+    bool color_at_later_position(const std::vector<char>& colors, uint idx, char c) {
+
+        for (uint i = idx + PATTERN_LEN; i < colors.size(); i += PATTERN_LEN)
+            if (colors[i] == c)
+                return true;
+
+        return false;
+    }
+
+    void get_color(std::vector<char>& colors, uint l_end, char c,  InstructionList& instructions) {
+
+        while (colors[l_end] != c) {
+            robot_move(colors, l_end);
+            instructions.add_instruction(l_end);
+        }
+    }
+
+    bool is_color(std::vector<char>& colors, uint l_end, char c) {
+
+        for (uint i = l_end; i < colors.size(); i++)
+            if (colors[i] == c)
+                return true;
+
+        return false;
+    }
+
+    void move_element_to_last_positions(std::vector<char>& colors, uint l_end, char c, InstructionList& instructions) {
+
+        for (uint i = colors.size() - 1; i > l_end; i--)
+            if (colors[i] == c) {
+
+                if (i < colors.size() - PATTERN_LEN) {
+                    robot_move(colors, i);
+                    instructions.add_instruction(i);
+                }
+
+                return;
+            }
+    }
+
+    void fit_element(std::vector<char>& colors, uint l_end, char c, InstructionList& instructions) {
+
+        uint req_place = 0;
+
+        for (uint i = colors.size() - 1; i >= colors.size() - PATTERN_LEN; i--)
+            if (!((i - l_end) % PATTERN_LEN))
+                req_place = i;
+
+        while (colors[req_place] != c) {
+            robot_move(colors, colors.size() - PATTERN_LEN - 1);
+            instructions.add_instruction(colors.size() - PATTERN_LEN - 1);
+        }
+    }
+
+    void move_color_to_required_position(std::vector<char>& colors, uint l_end, char c, InstructionList& instructions) {
+
+        if (!is_color(colors, l_end, c))
+            throw std::runtime_error("Warning: Lack of required color " + std::string(1, c) + "; Sorting terminates");
+
+        // Place element at the end.
+        move_element_to_last_positions(colors, l_end, c, instructions);
+        fit_element(colors, l_end, c, instructions);
+
+
+
+    }
+
+
+
+}
+
+InstructionList universal_sort(const std::vector<char>& colors) {
+
+    InstructionList instructions;
+    std::vector<char> colors_(colors.begin(), colors.end());
+
+    const uint max_sort = colors_.size() - PATTERN_LEN;
+
+    for (uint l_end = 0, p_point = 0; l_end < max_sort; l_end++, p_point = (p_point + 1) % PATTERN_LEN) {
+
+        // Color is not at it's place.
+        if (colors_[l_end] != PATTERN[p_point]) {
+
+            // Not found color at required further position.
+            if (!color_at_later_position(colors_, l_end, PATTERN[p_point])) {
+
+                try {
+                    // Moving color to position which will enable to fit it into sorting pattern.
+                    move_color_to_required_position(colors_, l_end, PATTERN[p_point], instructions);
+                } catch (std::runtime_error& e) {
+                    std::cout << e.what() << std::endl;
+                    break;
+                }
+
+            }
+
+            get_color(colors_, l_end, PATTERN[p_point], instructions);
+        }
+
+    }
+
+    return instructions;
 }
 
 

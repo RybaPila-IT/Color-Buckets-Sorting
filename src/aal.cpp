@@ -23,15 +23,41 @@ bool cmdOptionExists(char** begin, char** end, const std::string& option)
     return std::find(begin, end, option) != end;
 }
 
+void no_args_run() {
+
+    //std::vector<char> colors({'C', 'C', 'M','M', 'Y', 'Y', 'K', 'K'});
+    //std::vector<char> colors({'C', 'Y', 'Y','M', 'C', 'M', 'Y', 'K'});
+    DataGenerator generator;
+    std::vector<char> colors;
+    colors = generator.parametric_generator(200000, 0.25, 0.25, 0.25, 0.25).value();
+    //colors = generator.random_generator(200);
+
+    auto list = universal_sort(colors);
+    std::cout << "List len: " << list.size() << std::endl;
+    Robot::sort(colors, list);
+
+    //for (auto& c : colors)
+      //  std::cout << c << " ";
+
+    std::cout << std::endl;
+
+}
+
+
+
+
 int main(int argc, char * argv[])
 {
+
+    no_args_run();
+
     if(argc < 2){
         cout << "Too few arguments" << endl;
         return 0;
     }
     Graph graph;
     vector<char> data = {'C', 'Y', 'K', 'M', 'K', 'C'};
-    graph.gen_graph(data);
+   // graph.gen_graph(data);
 
     /*
      * interactive mode

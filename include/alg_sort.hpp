@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <deque>
+#include "robot.h"
 
 class Node{
 public:
@@ -30,5 +31,10 @@ public:
 private:
     std::vector<Node> graphNodes;
 };
+
+
+InstructionList universal_sort(const std::vector<char>& colors);
+
+
 
 #endif //AAL_CMYK_ALG_SORT_HPP
