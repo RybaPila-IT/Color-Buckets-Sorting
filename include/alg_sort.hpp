@@ -1,7 +1,3 @@
-//
-// Created by swirta on 24.05.2021.
-//
-
 #ifndef AAL_CMYK_ALG_SORT_HPP
 #define AAL_CMYK_ALG_SORT_HPP
 
@@ -41,7 +37,5 @@ public:
 
 InstructionList universal_sort(const std::vector<char>& colors);
 InstructionList substrings_sort(const std::vector<char>& colors);
-
-
 
 #endif //AAL_CMYK_ALG_SORT_HPP

@@ -1,6 +1,3 @@
-//
-// Created by swirta on 13.05.2021.
-//
 #include "data_generator.hpp"
 #include <algorithm>
 

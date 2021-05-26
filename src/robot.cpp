@@ -1,16 +1,9 @@
-//
-// Created by radoslaw on 24.05.2021.
-//
 #include <stdexcept>
-#include <utility>
 
 #include "robot.h"
 #include "constants.hpp"
 
 InstructionList::InstructionList(): current_instruction(0), instructions() {}
-
-
-InstructionList::InstructionList(std::vector<uint> instructions): current_instruction(0), instructions(std::move(instructions)) {}
 
 void InstructionList::add_instruction(uint order) {
     instructions.push_back(order);

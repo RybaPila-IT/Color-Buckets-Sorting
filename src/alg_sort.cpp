@@ -1,7 +1,3 @@
-//
-// Created by swirta on 24.05.2021.
-//
-
 #include <iostream>
 #include <unordered_map>
 #include "alg_sort.hpp"
@@ -98,7 +94,7 @@ bool Graph::find_with_trace(Node &parent, Node &node, uint unordered, std::deque
 
 std::optional<std::deque<size_t>> Graph::perform_search(size_t length, uint unordered) {
     DataGenerator dataGenerator;
-    std::vector<char> dataVector = dataGenerator.substring_generator(length, 1.0);
+    std::vector<char> dataVector = dataGenerator.substring_generator(length, 1.0, 10, 0);
 
     std::deque<char> dataDeque;
     for(auto &elem : dataVector){

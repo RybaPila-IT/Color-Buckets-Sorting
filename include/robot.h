@@ -16,11 +16,10 @@ private:
 
 public:
     InstructionList();
-    explicit InstructionList(std::vector<uint> instructions);
 
     void add_instruction(uint order);
     uint get_next_instruction();
-    uint size() const;
+    [[nodiscard]] uint size() const;
     [[nodiscard]] bool instruction_left() const;
 };
 

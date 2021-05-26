@@ -1,9 +1,5 @@
-//
-// Created by swirta on 13.05.2021.
-//
-
-#ifndef AAL_ALGORYTM_SORTOWANIA_DATA_GENERATOR_HPP
-#define AAL_ALGORYTM_SORTOWANIA_DATA_GENERATOR_HPP
+#ifndef AAL_CMYK_DATA_GENERATOR_HPP
+#define AAL_CMYK_DATA_GENERATOR_HPP
 
 #include <chrono>
 #include <random>
@@ -16,7 +12,7 @@ class DataGenerator{
 public:
     std::vector<char> random_generator(size_t length);
     std::optional<std::vector<char>> parametric_generator(size_t length, double cProb, double mProb, double yProb, double kProb);
-    std::vector<char> substring_generator(size_t length, double substr_prob, double mean_substr, double sttdev_substr);
+    std::vector<char> substring_generator(size_t length, double substr_prob, double mean_substr, double stddev_substr);
     std::vector<char> no_substring_generator(size_t length);
     std::vector<char> permutation_generator(size_t length, size_t changes);
 
@@ -26,4 +22,4 @@ private:
     std::random_device randomDevice;
 };
 
-#endif //AAL_ALGORYTM_SORTOWANIA_DATA_GENERATOR_HPP
+#endif //AAL_CMYK_DATA_GENERATOR_HPP
