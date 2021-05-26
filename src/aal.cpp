@@ -24,42 +24,60 @@ bool cmdOptionExists(char** begin, char** end, const std::string& option)
     return std::find(begin, end, option) != end;
 }
 
-void no_args_run() {
 
-    //std::vector<char> colors({'C', 'C', 'M','M', 'Y', 'Y', 'K', 'K'});
-    //std::vector<char> colors({'C', 'Y', 'Y','M', 'C', 'M', 'Y', 'K'});
-    DataGenerator generator;
-    std::vector<char> colors;
-    colors = generator.parametric_generator(8, 0.25, 0.25, 0.25, 0.25).value();
-    //colors = generator.random_generator(200);
-    auto colors2 = colors;
-    auto list = universal_sort(colors);
+
+void simulate(std::vector<char>& colors, InstructionList& list) {
+  
     std::cout << "List len: " << list.size() << std::endl;
     Robot::sort(colors, list);
 
     for (auto& c : colors)
         std::cout << c << " ";
-
-    std::cout << std::endl;
-
-    Graph graph;
-    graph.gen_graph(colors2);
-    auto test = graph.perform_search(8, 4);
-    InstructionList list2;
-    for(auto &e : test.value()){
-        list2.add_instruction(e);
-    }
-    Robot::sort(colors2, list2);
-    for (auto& c : colors)
-        std::cout << c << " ";
-
     std::cout << std::endl;
 }
+
+void no_args_run_uniform() {
+
+    std::cout << "Run uniform sort;" << std::endl;
+
+    //std::vector<char> colors({'C', 'C', 'M','M', 'Y', 'Y', 'K', 'K'});
+    //std::vector<char> colors({'C', 'Y', 'Y','M', 'C', 'M', 'Y', 'K'});
+    DataGenerator generator;
+    std::vector<char> colors;
+    //colors = generator.parametric_generator(200, 0.25, 0.25, 0.25, 0.25).value();
+    //colors = std::vector<char>({'M', 'C', 'Y', 'K', 'C', 'M', 'Y', 'K'});
+    colors = generator.parametric_generator(50, 0.25, 0.25, 0.25, 0.25).value();
+    //colors = generator.substring_generator(80 , 1.0, 8, 5);
+    auto list = universal_sort(colors);
+
+    simulate(colors, list);
+}
+
+void no_args_run_substring() {
+
+    std::cout << "Run substring sort;" << std::endl;
+
+    DataGenerator generator;
+
+    std::vector<char> colors;
+
+    //colors = std::vector<char>({'C', 'M', 'Y', 'K', 'C', 'M', 'Y', 'K'});
+    //colors = std::vector<char>({'M', 'M', 'Y', 'C', 'M', 'Y', 'K', 'C', 'M', 'M', 'C', 'M', 'Y'});
+    //colors = std::vector<char>({'K', 'C', 'Y', 'K', 'C', 'M', 'Y', 'M'});
+    //colors = std::vector<char>({'K', 'C', 'Y', 'C', 'C', 'M', 'Y', 'K', 'C', 'M', 'Y', 'K', 'Y', 'M', 'C', 'K', 'C', 'M','Y', 'K'});
+    colors = generator.substring_generator(80 , 1.0, 8, 5);
+
+    auto list = substrings_sort(colors);
+
+    simulate(colors, list);
+}
+
 
 int main(int argc, char * argv[])
 {
 
-    no_args_run();
+    no_args_run_uniform();
+    no_args_run_substring();
 
     if(argc < 2){
         cout << "Too few arguments" << endl;

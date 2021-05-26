@@ -39,8 +39,8 @@ public:
     Node root;
 };
 
-
 InstructionList universal_sort(const std::vector<char>& colors);
+InstructionList substrings_sort(const std::vector<char>& colors);
 
 
 
