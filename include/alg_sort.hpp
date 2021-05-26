@@ -8,6 +8,7 @@
 #include <vector>
 #include <deque>
 #include <optional>
+#include "robot.h"
 
 class Node{
 public:
@@ -37,5 +38,10 @@ public:
 
     Node root;
 };
+
+
+InstructionList universal_sort(const std::vector<char>& colors);
+
+
 
 #endif //AAL_CMYK_ALG_SORT_HPP
