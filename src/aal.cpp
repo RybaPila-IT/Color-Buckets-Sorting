@@ -30,9 +30,9 @@ void no_args_run() {
     //std::vector<char> colors({'C', 'Y', 'Y','M', 'C', 'M', 'Y', 'K'});
     DataGenerator generator;
     std::vector<char> colors;
-    colors = generator.parametric_generator(200, 0.25, 0.25, 0.25, 0.25).value();
+    colors = generator.parametric_generator(8, 0.25, 0.25, 0.25, 0.25).value();
     //colors = generator.random_generator(200);
-
+    auto colors2 = colors;
     auto list = universal_sort(colors);
     std::cout << "List len: " << list.size() << std::endl;
     Robot::sort(colors, list);
@@ -42,10 +42,19 @@ void no_args_run() {
 
     std::cout << std::endl;
 
+    Graph graph;
+    graph.gen_graph(colors2);
+    auto test = graph.perform_search(8, 4);
+    InstructionList list2;
+    for(auto &e : test.value()){
+        list2.add_instruction(e);
+    }
+    Robot::sort(colors2, list2);
+    for (auto& c : colors)
+        std::cout << c << " ";
+
+    std::cout << std::endl;
 }
-
-
-
 
 int main(int argc, char * argv[])
 {

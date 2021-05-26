@@ -96,6 +96,24 @@ bool Graph::find_with_trace(Node &parent, Node &node, uint unordered, std::deque
     return false;
 }
 
+std::optional<std::deque<size_t>> Graph::perform_search(size_t length, uint unordered) {
+    DataGenerator dataGenerator;
+    std::vector<char> dataVector = dataGenerator.substring_generator(length, 1.0);
+
+    std::deque<char> dataDeque;
+    for(auto &elem : dataVector){
+        dataDeque.push_back(elem);
+    }
+
+    Node node = Node(dataDeque);
+    std::deque<size_t> instructions;
+    if(find_with_trace(root, node, unordered, instructions)){
+        instructions.pop_front();
+        return instructions;
+    }
+    return std::nullopt;
+}
+
 namespace {
 
     void robot_move(std::vector<char> &colors, uint idx) {
@@ -205,23 +223,5 @@ InstructionList universal_sort(const std::vector<char>& colors) {
     }
 
     return instructions;
-}
-
-std::optional<std::deque<size_t>> Graph::perform_search(size_t length, uint unordered) {
-    DataGenerator dataGenerator;
-    std::vector<char> dataVector = dataGenerator.substring_generator(length, 1.0);
-
-    std::deque<char> dataDeque;
-    for(auto &elem : dataVector){
-        dataDeque.push_back(elem);
-    }
-
-    Node node = Node(dataDeque);
-    std::deque<size_t> instructions;
-    if(find_with_trace(root, node, unordered, instructions)){
-        instructions.pop_front();
-        return instructions;
-    }
-    return std::nullopt;
 }
 
