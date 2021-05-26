@@ -105,13 +105,11 @@ namespace {
 
     void move_element_to_last_positions(std::vector<char> &colors, uint l_end, char c, InstructionList &instructions) {
 
-        for (uint i = colors.size() - 1; i > l_end; i--)
+        for (uint i = colors.size() - 1 - PATTERN_LEN; i > l_end; i--)
             if (colors[i] == c) {
 
-                if (i < colors.size() - PATTERN_LEN) {
-                    robot_move(colors, i);
-                    instructions.add_instruction(i);
-                }
+                robot_move(colors, i);
+                instructions.add_instruction(i);
 
                 return;
             }
@@ -136,18 +134,46 @@ namespace {
         fit_element(colors, l_end, c, instructions);
     }
 
-    std::unordered_map<char, uint> calculate_occur(const std::vector<char>& colors) {
+    std::unordered_map<char, uint> calculate_occur(const std::vector<char>& colors, uint sort_b) {
 
         std::unordered_map<char, uint> occur;
 
-        for (char i : PATTERN)
-            occur.emplace(std::make_pair(i, 0));
-
-        for (char c : colors)
-            occur.find(c)->second++;
+        for (char i : PATTERN) occur.emplace(std::make_pair(i, 0));
+        for (uint i = sort_b; i < colors.size(); i++) occur.find(colors[i])->second++;
 
         return occur;
     }
+
+    void _universal_sort(std::vector<char>& colors, uint sort_b, uint p_point_b, InstructionList& list) {
+
+        std::unordered_map<char, uint> occur = calculate_occur(colors, sort_b);
+        const uint max_sort = colors.size() - PATTERN_LEN;
+
+        for (uint l_end = sort_b, p_point = p_point_b; l_end < max_sort; l_end++, p_point = (p_point + 1) % PATTERN_LEN) {
+
+            // Color is not at it's place.
+            if (colors[l_end] != PATTERN[p_point]) {
+
+                // Not found color at required further position.
+                if (!color_at_later_position(colors, l_end, PATTERN[p_point])) {
+
+                    if (!is_color(occur, PATTERN[p_point])) {
+                        std::cout << "Warning: Lack of the " << PATTERN[p_point] << " character to end sorting; Terminating;" << std::endl;
+                        break;
+                    }
+
+                    move_color_to_required_position(colors, l_end, PATTERN[p_point], list);
+                }
+
+                get_color(colors, l_end, PATTERN[p_point], list);
+            }
+
+            occur.find(colors[l_end])->second--;
+        }
+
+    }
+
+
 
 }
 
@@ -155,30 +181,8 @@ InstructionList universal_sort(const std::vector<char>& colors) {
 
     InstructionList instructions;
     std::vector<char> colors_(colors.begin(), colors.end());
-    std::unordered_map<char, uint> occur = calculate_occur(colors_);
-    const uint max_sort = colors_.size() - PATTERN_LEN;
 
-    for (uint l_end = 0, p_point = 0; l_end < max_sort; l_end++, p_point = (p_point + 1) % PATTERN_LEN) {
-
-        // Color is not at it's place.
-        if (colors_[l_end] != PATTERN[p_point]) {
-
-            // Not found color at required further position.
-            if (!color_at_later_position(colors_, l_end, PATTERN[p_point])) {
-
-                if (!is_color(occur, PATTERN[p_point])) {
-                    std::cout << "Warning: Lack of the " << PATTERN[p_point] << " character to end sorting; Terminating;" << std::endl;
-                    break;
-                }
-
-                move_color_to_required_position(colors_, l_end, PATTERN[p_point], instructions);
-            }
-
-            get_color(colors_, l_end, PATTERN[p_point], instructions);
-        }
-
-        occur.find(colors_[l_end])->second--;
-    }
+    _universal_sort(colors_, 0, 0, instructions);
 
     return instructions;
 }
@@ -258,19 +262,6 @@ namespace {
         }
     }
 
-    bool check_if_color_stuck(std::vector<char>& colors, int l_end, char c, InstructionList& list) {
-
-        for (int i = 1; i < PATTERN_LEN; i++)
-            if (colors[l_end + i] == c) {
-                list.add_instruction(l_end + i);
-                robot_move(colors, l_end + i);
-
-                return true;
-            }
-
-        return false;
-    }
-
     void get_substring(std::vector<char>& colors, int l_end, int substr_b, InstructionList& list) {
 
         for (int i = substr_b; i != l_end; i -= PATTERN_LEN) {
@@ -291,21 +282,19 @@ InstructionList substrings_sort(const std::vector<char>& colors) {
     int l_end = 0, patt_ptr = 0;
     int substr_b, substr_l;
 
-    const int unsorted_threshold = 2 * PATTERN_LEN - 1;
+    const int unsorted_threshold = 2 * PATTERN_LEN - 2;
 
     do {
 
         // Color is not at it's place.
         if (colors_[l_end] != PATTERN[patt_ptr]) {
 
-
             find_longest_substring(colors_, l_end, patt_ptr, substr_b, substr_l);
 
-
             if (!substr_l) {
-                // Check whether there is stuck color in first positions (not checked while substring search).
-                if (!check_if_color_stuck(colors_, l_end, PATTERN[patt_ptr], list))
-                    break;
+                // If why did not find required substring it means that there is only few (in unchecked boarders) or none
+                // required color bins left. We break the loop in order to finish sorting with the universal sort.
+                break;
             } else {
 
                 if (!substring_at_position(l_end, substr_b))
@@ -325,6 +314,8 @@ InstructionList substrings_sort(const std::vector<char>& colors) {
 
     } while (l_end < (int) colors_.size() - unsorted_threshold);
 
+
+    _universal_sort(colors_, l_end, patt_ptr, list);
 
     return list;
 }
