@@ -3,6 +3,7 @@
 //
 #include "data_generator.hpp"
 #include "alg_sort.hpp"
+#include "robot.h"
 #include <iostream>
 #include <algorithm>
 
@@ -24,8 +25,9 @@ bool cmdOptionExists(char** begin, char** end, const std::string& option)
 }
 
 
-void simulate(std::vector<char>& colors, InstructionList& list) {
 
+void simulate(std::vector<char>& colors, InstructionList& list) {
+  
     std::cout << "List len: " << list.size() << std::endl;
     Robot::sort(colors, list);
 
@@ -33,7 +35,6 @@ void simulate(std::vector<char>& colors, InstructionList& list) {
         std::cout << c << " ";
     std::cout << std::endl;
 }
-
 
 void no_args_run_uniform() {
 
@@ -72,7 +73,6 @@ void no_args_run_substring() {
 }
 
 
-
 int main(int argc, char * argv[])
 {
 
@@ -83,10 +83,6 @@ int main(int argc, char * argv[])
         cout << "Too few arguments" << endl;
         return 0;
     }
-    Graph graph;
-    vector<char> data = {'C', 'Y', 'K', 'M', 'K', 'C'};
-   // graph.gen_graph(data);
-
     /*
      * interactive mode
      * ./aal_cmyk -i

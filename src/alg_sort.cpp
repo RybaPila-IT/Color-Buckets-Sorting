@@ -6,29 +6,27 @@
 #include <unordered_map>
 #include "alg_sort.hpp"
 #include "constants.hpp"
+#include "data_generator.hpp"
 
-Node::Node(std::deque<char> value_) : value(value_) {}
+Node::Node(std::deque<char> value_) : index(0), value(value_), childes(std::vector<Node>()) {}
 
-bool Graph::add_node_to_open_set(std::deque<Node> &openSet, Node &currentNode, Node &newNode) {
-    bool equal = false;
-    bool added = false;
-    for(auto& e : currentNode.edges){
-        if(graphNodes[e] == newNode)
+bool Node::equal(const Node &left, const Node &right, uint unordered){
+    if(unordered > 4)
+        return false;
+
+    for(size_t i = 0; i < left.value.size() - unordered; ++i){
+        if(left.value[i] != right.value[i])
             return false;
     }
-    for(size_t i = 0; i< graphNodes.size(); ++i){
-        if(graphNodes[i] == newNode){
-            equal = true;
-            currentNode.edges.push_back(i);
-        }
+    return true;
+}
+
+bool Graph::add_node(Node &currentNode, Node &newNode) {
+    if(!find_node(root, newNode)){
+        currentNode.childes.push_back(std::move(newNode));
+        return true;
     }
-    if(!equal){
-        auto index = graphNodes.empty() ? 0 : graphNodes.size() - 1;
-        openSet.emplace_back(std::move(newNode));
-        currentNode.edges.push_back(index);
-        added = true;
-    }
-    return added;
+    return false;
 }
 
 std::vector<Node> Graph::node_permutation(Node &node) {
@@ -39,6 +37,7 @@ std::vector<Node> Graph::node_permutation(Node &node) {
                 break;
 
             Node tmp = node;
+            tmp.index = i;
             tmp.value.push_back(node.value[i]);
             tmp.value.push_back(node.value[i + 1]);
             tmp.value.push_back(node.value[i + 2]);
@@ -52,24 +51,67 @@ std::vector<Node> Graph::node_permutation(Node &node) {
     return nodeVector;
 }
 
+bool Graph::find_node(Node &parent, Node &node) {
+    if(parent.value == node.value)
+        return true;
+    for(auto &node_ : parent.childes){
+        if(find_node(node_, node))
+            return true;
+    }
+    return false;
+}
+
 void Graph::gen_graph(std::vector<char> &dataVector) {
     std::deque<char> data;
     for(auto &elem : dataVector){
         data.push_back(elem);
     }
+    root = Node(data);
+    root.index = 0;
+    gen_tree(root);
+}
 
-    std::deque<Node> openSet;
-    openSet.emplace_back(Node(data));
-    while(!openSet.empty()){
-        std::vector<Node> nodeVector = node_permutation(openSet.front());
-        for(auto& potNode : nodeVector) {
-            if(add_node_to_open_set(openSet, openSet.front(), potNode)){
-                openSet.push_back(potNode);
-                graphNodes.emplace_back(std::move(openSet.front()));
-                openSet.pop_front();
-            }
+void Graph::gen_tree(Node &node) {
+    std::vector<Node> nodeVector = node_permutation(node);
+
+    for(auto& potNode : nodeVector)
+        add_node(node, potNode);
+
+    for(auto &child : node.childes)
+        gen_tree(child);
+}
+
+bool Graph::find_with_trace(Node &parent, Node &node, uint unordered, std::deque<size_t> &instructions) {
+    if(Node::equal(parent, node, unordered)){
+        instructions.push_front(parent.index);
+        return true;
+    }
+
+    for(auto &node_ : parent.childes){
+        if(find_with_trace(node_, node, unordered, instructions)){
+            instructions.push_front(parent.index);
+            return true;
         }
     }
+    return false;
+}
+
+std::optional<std::deque<size_t>> Graph::perform_search(size_t length, uint unordered) {
+    DataGenerator dataGenerator;
+    std::vector<char> dataVector = dataGenerator.substring_generator(length, 1.0);
+
+    std::deque<char> dataDeque;
+    for(auto &elem : dataVector){
+        dataDeque.push_back(elem);
+    }
+
+    Node node = Node(dataDeque);
+    std::deque<size_t> instructions;
+    if(find_with_trace(root, node, unordered, instructions)){
+        instructions.pop_front();
+        return instructions;
+    }
+    return std::nullopt;
 }
 
 namespace {
@@ -272,7 +314,6 @@ namespace {
     }
 
 }
-
 
 InstructionList substrings_sort(const std::vector<char>& colors) {
 
