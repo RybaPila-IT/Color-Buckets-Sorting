@@ -9,7 +9,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/bin)
 set(CMAKE_EXPORT_COMPILE_COMMANDS)
 
 set(EXECUTABLE_NAME "aal_cmyk")
-include_directories(${CMAKE_HOME_DIRECTORY}/include)
+include_directories(${CMAKE_HOME_DIRECTORY}/include/)
 add_executable(${EXECUTABLE_NAME} ${TARGET_SRC})
 
 if(MSVC)
