@@ -186,17 +186,24 @@ InstructionList universal_sort(const std::vector<char>& colors) {
 
 namespace {
 
-    void find_longest_substring(const std::vector<char>& colors, uint l_end, uint patt_ptr, uint& substr_b, uint& substr_l) {
+    void update_substring_found(int& substr_b, int& substr_l, int curr_substr_b, int curr_substr_l) {
+        substr_l = std::max(substr_l, curr_substr_l);
+
+        if (substr_l == curr_substr_l)
+            substr_b = curr_substr_b;
+    }
+
+    void find_longest_substring(const std::vector<char>& colors, int l_end, int patt_ptr, int& substr_b, int& substr_l) {
 
         substr_b = l_end;
         substr_l = 0;
 
         bool set = false;
-        uint curr_substr_b = l_end;
-        uint curr_substr_l = 0;
-        uint curr_patt_ptr = 0;
+        int curr_substr_b = l_end;
+        int curr_substr_l = 0;
+        int curr_patt_ptr = 0;
 
-        for (uint i = l_end + PATTERN_LEN - 1; i < colors.size(); i++) {
+        for (int i = l_end + PATTERN_LEN - 1; i < (int) colors.size() - PATTERN_LEN + 1; i++) {
             if (colors[i] == PATTERN[(patt_ptr + curr_patt_ptr) % 4]) {
                 if (!set) {
                     curr_substr_b = i;
@@ -206,22 +213,72 @@ namespace {
                 curr_patt_ptr++;
             } else {
 
-                substr_l = std::max(substr_l, curr_substr_l);
-
-                if (substr_l == curr_substr_l)
-                    substr_b = curr_substr_b;
-
+                update_substring_found(substr_b, substr_l, curr_substr_b, curr_substr_l);
                 curr_substr_b = i;
                 curr_substr_l = 0;
                 curr_patt_ptr = 0;
                 set = false;
+                // Decrement i if new subsequence begins.
+                if (colors[i] == PATTERN[(patt_ptr + curr_patt_ptr) % 4])
+                    i--;
 
             }
         }
-
+        // Check whether substring ends with whole string itself.
+        update_substring_found(substr_b, substr_l, curr_substr_b, curr_substr_l);
     }
 
+    bool substring_at_position(int l_end, int subst_b) {
+        return !((subst_b - l_end) % PATTERN_LEN);
+    }
 
+    void move_substring_to_position(std::vector<char>& colors, int l_end, int& substr_b, int substr_l, InstructionList& list) {
+
+        int offset = 0;
+
+        for (; (colors.size() - l_end - 1 - offset) % 4 != 0; offset++) {}
+
+        int picking_pos = substr_b - PATTERN_LEN + 1 + offset;
+
+        list.add_instruction(picking_pos);
+        robot_move(colors, picking_pos);
+
+        substr_l -= (1 + offset);
+        substr_b = (int) colors.size() - 1 - offset;
+
+        while (substr_l > 0) {
+            if (substr_b -PATTERN_LEN > picking_pos) {
+                list.add_instruction(picking_pos);
+                robot_move(colors, picking_pos);
+
+                substr_b -= PATTERN_LEN;
+                substr_l -= PATTERN_LEN;
+            } else
+                break;
+        }
+    }
+
+    bool check_if_color_stuck(std::vector<char>& colors, int l_end, char c, InstructionList& list) {
+
+        for (int i = 1; i < PATTERN_LEN; i++)
+            if (colors[l_end + i] == c) {
+                list.add_instruction(l_end + i);
+                robot_move(colors, l_end + i);
+
+                return true;
+            }
+
+        return false;
+    }
+
+    void get_substring(std::vector<char>& colors, int l_end, int substr_b, InstructionList& list) {
+
+        for (int i = substr_b; i != l_end; i -= PATTERN_LEN) {
+            list.add_instruction(l_end);
+            robot_move(colors, l_end);
+        }
+
+    }
 
 }
 
@@ -231,22 +288,42 @@ InstructionList substrings_sort(const std::vector<char>& colors) {
     InstructionList list;
     std::vector<char> colors_(colors.begin(), colors.end());
 
-    const uint substring_threshold = 5;
+    int l_end = 0, patt_ptr = 0;
+    int substr_b, substr_l;
 
-    uint l_end = 0, patt_ptr = 0;
-    uint substr_b, substr_l;
+    const int unsorted_threshold = 2 * PATTERN_LEN - 1;
 
     do {
 
-        find_longest_substring(colors, l_end, patt_ptr, substr_b, substr_l);
-
-        if (substr_l < substring_threshold)
-            break;
+        // Color is not at it's place.
+        if (colors_[l_end] != PATTERN[patt_ptr]) {
 
 
-    } while (l_end < colors_.size() - substring_threshold);
+            find_longest_substring(colors_, l_end, patt_ptr, substr_b, substr_l);
 
 
+            if (!substr_l) {
+                // Check whether there is stuck color in first positions (not checked while substring search).
+                if (!check_if_color_stuck(colors_, l_end, PATTERN[patt_ptr], list))
+                    break;
+            } else {
+
+                if (!substring_at_position(l_end, substr_b))
+                    move_substring_to_position(colors_, l_end, substr_b, substr_l, list);
+
+                get_substring(colors_, l_end, substr_b, list);
+
+                l_end += substr_l;
+                patt_ptr = (patt_ptr + substr_l) % 4;
+
+            }
+
+        } else {
+            l_end++;
+            patt_ptr = (patt_ptr + 1) % PATTERN_LEN;
+        }
+
+    } while (l_end < (int) colors_.size() - unsorted_threshold);
 
 
     return list;

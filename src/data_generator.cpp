@@ -3,7 +3,7 @@
 //
 #include "data_generator.hpp"
 #include <algorithm>
-#include <iostream>
+
 
 void DataGenerator::generate_collection(size_t length, std::array<std::pair<double, char>, 4> cmykProb,
                                                      std::vector<char>& dataVector) {

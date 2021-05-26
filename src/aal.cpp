@@ -23,6 +23,18 @@ bool cmdOptionExists(char** begin, char** end, const std::string& option)
     return std::find(begin, end, option) != end;
 }
 
+
+void simulate(std::vector<char>& colors, InstructionList& list) {
+
+    std::cout << "List len: " << list.size() << std::endl;
+    Robot::sort(colors, list);
+
+    for (auto& c : colors)
+        std::cout << c << " ";
+    std::cout << std::endl;
+}
+
+
 void no_args_run_uniform() {
 
     //std::vector<char> colors({'C', 'C', 'M','M', 'Y', 'Y', 'K', 'K'});
@@ -30,30 +42,29 @@ void no_args_run_uniform() {
     DataGenerator generator;
     std::vector<char> colors;
     //colors = generator.parametric_generator(200, 0.25, 0.25, 0.25, 0.25).value();
-
+    //colors = std::vector<char>({'M', 'C', 'Y', 'K', 'C', 'M', 'Y', 'K'});
     colors = generator.random_generator(200);
     auto list = universal_sort(colors);
-    std::cout << "List len: " << list.size() << std::endl;
-    Robot::sort(colors, list);
 
-    for (auto& c : colors)
-        std::cout << c << " ";
-    std::cout << std::endl;
-
+    simulate(colors, list);
 }
 
 void no_args_run_substring() {
 
     DataGenerator generator;
 
-    auto colors = generator.substring_generator(200 , 1.0, 20, 2);
+    std::vector<char> colors;
 
-    for (auto& c : colors)
-        std::cout << c << " ";
+    //colors = std::vector<char>({'C', 'M', 'Y', 'K', 'C', 'M', 'Y', 'K'});
+    //colors = std::vector<char>({'M', 'M', 'Y', 'C', 'M', 'Y', 'K', 'C', 'M', 'M', 'C', 'M', 'Y'});
+    //colors = std::vector<char>({'K', 'C', 'Y', 'K', 'C', 'M', 'Y', 'M'});
+    colors = std::vector<char>({'K', 'C', 'Y', 'C', 'C', 'M', 'Y', 'K', 'C', 'M', 'Y', 'K', 'Y', 'M', 'C', 'K', 'C', 'M','Y', 'K'});
+    //colors = generator.substring_generator(80 , 0.8, 8, 5);
 
-    std::cout << std::endl;
+    auto list = substrings_sort(colors);
+
+    simulate(colors, list);
 }
-
 
 
 
