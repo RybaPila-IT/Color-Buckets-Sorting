@@ -77,6 +77,8 @@ void no_args_run_brute() {
     Graph graph;
     graph.gen_graph(colors);
     auto test = graph.perform_search(8, 4);
+    if(!test.has_value())
+        return;
     InstructionList list2;
     for(auto &e : test.value()){
         list2.add_instruction(e);
