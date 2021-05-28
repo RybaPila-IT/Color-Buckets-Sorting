@@ -19,7 +19,7 @@ else()
 endif()
 
 #Add tests -> building program for testing with boost
-set(BUILD_TESTS True) #Set to "True" for test for building tests
+set(BUILD_TESTS False) #Set to "True" for test for building tests
 
 if(BUILD_TESTS)
     message("Building tests.")

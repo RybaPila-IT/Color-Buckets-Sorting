@@ -1,7 +1,9 @@
 #include "data_generator.hpp"
 #include "alg_sort.hpp"
 #include "robot.h"
+#include "utils.hpp"
 #include <iostream>
+#include <chrono>
 
 
 //char* getCmdOption(char ** begin, char ** end, const std::string & option)
@@ -26,9 +28,9 @@ void simulate(std::vector<char>& colors, InstructionList& list) {
     std::cout << "List len: " << list.size() << std::endl;
     Robot::sort(colors, list);
 
-    for (auto& c : colors)
-        std::cout << c << " ";
-    std::cout << std::endl;
+//    for (auto& c : colors)
+//        std::cout << c << " ";
+//    std::cout << std::endl;
 }
 
 void no_args_run_uniform() {
@@ -42,10 +44,16 @@ void no_args_run_uniform() {
     //colors = generator.parametric_generator(200, 0.25, 0.25, 0.25, 0.25).value();
     //colors = std::vector<char>({'M', 'C', 'Y', 'K', 'C', 'M', 'Y', 'K'});
     colors = generator.parametric_generator(50, 0.25, 0.25, 0.25, 0.25).value();
+    auto original = colors;
     //colors = generator.substring_generator(80 , 1.0, 8, 5);
+    auto begin = std::chrono::high_resolution_clock::now();
     auto list = universal_sort(colors);
+    auto end = std::chrono::high_resolution_clock::now();
 
     simulate(colors, list);
+
+    auto time = get_time(begin, end);
+    print_diagnostics("test", original, colors, 50, time, list.size(), std::cout, 0);
 }
 
 void no_args_run_substring() {
