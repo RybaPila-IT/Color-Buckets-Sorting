@@ -17,6 +17,7 @@ private:
 public:
     InstructionList();
 
+    bool empty();
     void add_instruction(uint order);
     uint get_next_instruction();
     [[nodiscard]] uint size() const;

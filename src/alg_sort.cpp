@@ -1,116 +1,92 @@
 #include <iostream>
 #include <unordered_map>
+#include <map>
+#include <queue>
 #include "alg_sort.hpp"
 #include "constants.hpp"
-#include "data_generator.hpp"
+#include "utils.hpp"
 
-Node::Node(std::deque<char> value_) : index(0), value(value_), childes(std::vector<Node>()) {}
-
-bool Node::equal(const Node &left, const Node &right, uint unordered){
-    if(unordered > 4)
-        return false;
-
-    for(size_t i = 0; i < left.value.size() - unordered; ++i){
-        if(left.value[i] != right.value[i])
+bool equal(const std::deque<char> &left, const std::deque<char> &rigth, size_t unordered){
+    for(size_t i = 0; i < rigth.size() - unordered; ++i){
+        if(left[i] != rigth[i])
             return false;
     }
     return true;
 }
 
-bool Graph::add_node(Node &currentNode, Node &newNode) {
-    if(!find_node(root, newNode)){
-        currentNode.childes.push_back(std::move(newNode));
-        return true;
+std::deque<char> generate_terminal_node(size_t length){
+    std::deque<char> terminalNode;
+    terminalNode.emplace_back('C');
+    while(terminalNode.size() != length){
+        switch (terminalNode.back()) {
+            case 'C':
+                terminalNode.emplace_back('M');
+                break;
+            case 'M':
+                terminalNode.emplace_back('Y');
+                break;
+            case 'Y':
+                terminalNode.emplace_back('K');
+                break;
+            case 'K':
+                terminalNode.emplace_back('C');
+                break;
+        }
     }
-    return false;
+    return std::move(terminalNode);
 }
 
-std::vector<Node> Graph::node_permutation(Node &node) {
-    std::vector<Node> nodeVector;
+std::vector<std::pair<std::deque<char>, InstructionList>> node_permutation(std::pair<std::deque<char>, InstructionList> &node) {
+    std::vector<std::pair<std::deque<char>, InstructionList>> nodeVector;
     for(size_t index = 0; index < 4; ++index){
-        for(size_t i = index; i < node.value.size(); i = i + 4){
-            if(i + 4 >= node.value.size())
+        for(size_t i = index; i < node.first.size(); i = i + 4){
+            if(i + 4 >= node.first.size())
                 break;
 
-            Node tmp = node;
-            tmp.index = i;
-            tmp.value.push_back(node.value[i]);
-            tmp.value.push_back(node.value[i + 1]);
-            tmp.value.push_back(node.value[i + 2]);
-            tmp.value.push_back(node.value[i + 3]);
+            auto newNode = node;
+            newNode.second.add_instruction(i);
+            newNode.first.push_back(node.first[i]);
+            newNode.first.push_back(node.first[i + 1]);
+            newNode.first.push_back(node.first[i + 2]);
+            newNode.first.push_back(node.first[i + 3]);
             for(size_t j = 0; j < 4; ++j)
-                tmp.value.erase(tmp.value.begin() + i);
+                newNode.first.erase(newNode.first.begin() + i);
 
-            nodeVector.push_back(tmp);
+            nodeVector.push_back(newNode);
         }
     }
-    return nodeVector;
+    return std::move(nodeVector);
 }
 
-bool Graph::find_node(Node &parent, Node &node) {
-    if(parent.value == node.value)
-        return true;
-    for(auto &node_ : parent.childes){
-        if(find_node(node_, node))
-            return true;
-    }
-    return false;
-}
+InstructionList brute_force_sort(const std::vector<char>& colors){
+    /*Coping data to deque container for faster insert operations*/
+    std::deque<char> colorsDeque;
+    for(auto &color : colors)
+        colorsDeque.push_back(color);
 
-void Graph::gen_graph(std::vector<char> &dataVector) {
-    std::deque<char> data;
-    for(auto &elem : dataVector){
-        data.push_back(elem);
-    }
-    root = Node(data);
-    root.index = 0;
-    gen_tree(root);
-}
+    auto terminalNode = generate_terminal_node(colors.size());
+    auto unordered = max_unsorted_length(colors);
+    std::map<std::deque<char>, InstructionList> search_tree;
+    std::queue<std::pair<std::deque<char>, InstructionList>> openSet;
 
-void Graph::gen_tree(Node &node) {
-    std::vector<Node> nodeVector = node_permutation(node);
+    /*initial vertex*/
+    std::pair<std::deque<char>, InstructionList> root = std::pair(colorsDeque, InstructionList());
+    search_tree.insert(root);
+    openSet.push(root);
 
-    for(auto& potNode : nodeVector)
-        add_node(node, potNode);
+    while(!openSet.empty()){
+        auto node = openSet.front();
+        openSet.pop();
+        if(equal(node.first, terminalNode, unordered))
+            return node.second;
 
-    for(auto &child : node.childes)
-        gen_tree(child);
-}
-
-bool Graph::find_with_trace(Node &parent, Node &node, uint unordered, std::deque<size_t> &instructions) {
-    if(Node::equal(parent, node, unordered)){
-        instructions.push_front(parent.index);
-        return true;
-    }
-
-    for(auto &node_ : parent.childes){
-        if(find_with_trace(node_, node, unordered, instructions)){
-            instructions.push_front(parent.index);
-            return true;
+        auto permutations = node_permutation(node);
+        for(auto &permutation : permutations){
+            if(search_tree.insert(permutation).second)
+                openSet.push(permutation);
         }
     }
-    return false;
-}
-
-std::optional<std::deque<size_t>> Graph::perform_search(size_t length, uint unordered) {
-    SubstringGenerator dataGenerator(1.0, 10, 0);
-    std::vector<char> dataVector = dataGenerator.generate(length);
-
-    std::deque<char> dataDeque;
-    std::cout << "TEST" << std::endl;
-    for(auto &elem : dataVector){
-        dataDeque.push_back(elem);
-        std::cout << elem << ", ";
-    }
-    std::cout << std::endl;
-
-    Node node = Node(dataDeque);
-    std::deque<size_t> instructions;
-    if(find_with_trace(root, node, unordered, instructions)){
-        instructions.pop_front();
-        return instructions;
-    }
-    return std::nullopt;
+    return std::move(InstructionList());
 }
 
 namespace {

@@ -83,22 +83,14 @@ void no_args_run_brute() {
     auto colors = generator.generate(9);
     auto colors_cpy = colors;
 
-    Graph graph;
     auto begin = std::chrono::high_resolution_clock::now();
-    graph.gen_graph(colors);
-
-    auto test = graph.perform_search(colors.size(), max_unsorted_length(colors));
+    auto list = brute_force_sort(colors);
     auto end = std::chrono::high_resolution_clock::now();
-    if(!test.has_value()){
+
+    if(list.empty()){
         std::cout << "Nie udalo sie rozwiac problemu" << std::endl;
         return;
     }
-
-    InstructionList list;
-    for(auto &e : test.value()){
-        list.add_instruction(e);
-    }
-
     auto time = get_time(begin, end);
     simulate(colors_cpy, list);
     print_diagnostics("brute force", colors, colors_cpy, colors.size(), time, list.size(), std::cout, 0);
