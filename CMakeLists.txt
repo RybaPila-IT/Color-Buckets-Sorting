@@ -40,26 +40,26 @@ if(BUILD_TESTS)
     enable_testing()
 endif()
 
-# set (BUILD_DOCS True) #set TRUE if you want to build docs
-# if(BUILD_DOCS)
-#     find_package(Doxygen)
-#     option(BUILD_DOCUMENTATION "Create and install the HTML based API
-#     documentation (requires Doxygen)" ${DOXYGEN_FOUND})
+ set (BUILD_DOCS True) #set TRUE if you want to build docs
+ if(BUILD_DOCS)
+     find_package(Doxygen)
+     option(BUILD_DOCUMENTATION "Create and install the HTML based API
+     documentation (requires Doxygen)" ${DOXYGEN_FOUND})
 
-#     if(NOT DOXYGEN_FOUND)
-#         message(FATAL_ERROR "Doxygen is needed to build the documentation.")
-#     endif()
+     if(NOT DOXYGEN_FOUND)
+         message(FATAL_ERROR "Doxygen is needed to build the documentation.")
+     endif()
 
-#     set(doxyfile_in ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile)
-#     set(doxyfile ${CMAKE_CURRENT_BINARY_DIR}/doxyfile)
+     set(doxyfile_in ${CMAKE_CURRENT_SOURCE_DIR}/doc/Doxyfile)
+     set(doxyfile ${CMAKE_CURRENT_BINARY_DIR}/doxyfile)
 
-#     configure_file(${doxyfile_in} ${doxyfile} @ONLY)
+     configure_file(${doxyfile_in} ${doxyfile} @ONLY)
 
-#     message("Doxygen build started.")
+     message("Doxygen build started.")
 
-#     add_custom_target(docs
-#             COMMAND ${DOXYGEN_EXECUTABLE} ${doxyfile_in}
-#             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/docs
-#             COMMENT "Generating API documentation with Doxygen"
-#             VERBATIM)
-# endif()
+     add_custom_target(docs
+             COMMAND ${DOXYGEN_EXECUTABLE} ${doxyfile_in}
+             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/doc
+             COMMENT "Generating API documentation with Doxygen"
+             VERBATIM)
+ endif()
