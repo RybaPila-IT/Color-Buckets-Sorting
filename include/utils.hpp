@@ -15,12 +15,14 @@ std::chrono::duration<double, std::milli> get_time(std::chrono::time_point<T> be
 
 std::optional<std::fstream> open_file(const std::string& filename);
 
-
 void print_diagnostics(const std::string& algName, const std::vector<char> &problemInstance,
                        const std::vector<char> &result, size_t problemSize,
                        const std::chrono::duration<double, std::milli>& time, size_t numSteps,
                        std::ostream &os, int mode);
 
+void print_vector(const std::vector<char> &data, std::ostream &os);
+
 size_t max_unsorted_length(const std::vector<char> &dataVector);
 
+bool check_string(const std::string &data);
 #endif //AAL_CMYK_UTILS_HPP

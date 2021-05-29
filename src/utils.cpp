@@ -1,5 +1,6 @@
 #include "utils.hpp"
 #include "constants.hpp"
+#include <algorithm>
 
 std::optional<std::fstream> open_file(const std::string& filename){
     std::fstream file;
@@ -42,6 +43,12 @@ void print_diagnostics(const std::string& algName, const std::vector<char> &prob
     }
 }
 
+void print_vector(const std::vector<char> &data, std::ostream &os){
+    for(auto &elem : data)
+        os << elem << ", ";
+    os << std::endl;
+}
+
 size_t max_unsorted_length(const std::vector<char> &dataVector){
     size_t CMYKCount[4] = {0};
     for(auto &color : dataVector){
@@ -63,4 +70,12 @@ size_t max_unsorted_length(const std::vector<char> &dataVector){
         }
     }
     return dataVector.size() - (*std::min_element(CMYKCount, CMYKCount + 4) * 4);
+}
+
+bool check_string(const std::string &data){
+    for(auto &color : data){
+        if(std::find(PATTERN, PATTERN + 4, color) == std::end(PATTERN))
+            return true;
+    }
+    return false;
 }

@@ -28,6 +28,7 @@ class Robot {
 
 public:
     static void sort(std::vector<char>& colors, InstructionList& instructions);
+    static void sort_interactive(std::vector<char>& colors, InstructionList& instructions);
 };
 
 

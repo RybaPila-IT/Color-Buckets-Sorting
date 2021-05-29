@@ -4,25 +4,28 @@
 #include "utils.hpp"
 #include <iostream>
 #include <chrono>
+#include <cstring>
 
+char* getCmdOption(char ** begin, char ** end, const std::string & option)
+{
+    char ** itr = std::find(begin, end, option);
+    if (itr != end && ++itr != end)
+    {
+        return *itr;
+    }
+    return nullptr;
+}
 
-//char* getCmdOption(char ** begin, char ** end, const std::string & option)
-//{
-//    char ** itr = std::find(begin, end, option);
-//    if (itr != end && ++itr != end)
-//    {
-//        return *itr;
-//    }
-//    return nullptr;
-//}
-//
-//bool cmdOptionExists(char** begin, char** end, const std::string& option)
-//{
-//    return std::find(begin, end, option) != end;
-//}
+bool cmdOptionExists(char** begin, char** end, const std::string& option)
+{
+    return std::find(begin, end, option) != end;
+}
 
-void simulate(std::vector<char>& colors, InstructionList& list) {
-    Robot::sort(colors, list);
+void simulate(std::vector<char>& colors, InstructionList& list, bool interactive) {
+    if(!interactive)
+        Robot::sort(colors, list);
+    else
+        Robot::sort_interactive(colors, list);
 }
 
 void no_args_run_uniform() {
@@ -42,7 +45,7 @@ void no_args_run_uniform() {
     auto list = universal_sort(colors);
     auto end = std::chrono::high_resolution_clock::now();
 
-    simulate(colors, list);
+    simulate(colors, list, 0);
 
     auto time = get_time(begin, end);
     auto file = open_file("test.txt");
@@ -72,7 +75,7 @@ void no_args_run_substring() {
     auto end = std::chrono::high_resolution_clock::now();
     auto time = get_time(begin, end);
 
-    simulate(colors, list);
+    simulate(colors, list, 0);
     print_diagnostics("substring sort", original, colors, colors.size(), time, list.size(), std::cout, 0);
 }
 
@@ -80,7 +83,7 @@ void no_args_run_brute() {
 
     std::cout << "Run brute-force sort" << std::endl;
     ParametricGenerator generator;
-    auto colors = generator.generate(9);
+    auto colors = generator.generate(11);
     auto colors_cpy = colors;
 
     auto begin = std::chrono::high_resolution_clock::now();
@@ -92,115 +95,148 @@ void no_args_run_brute() {
         return;
     }
     auto time = get_time(begin, end);
-    simulate(colors_cpy, list);
+    simulate(colors_cpy, list, 0);
     print_diagnostics("brute force", colors, colors_cpy, colors.size(), time, list.size(), std::cout, 0);
 }
 
-
-int main(/*int argc, char * argv[]*/)
+int main(int argc, char * argv[])
 {
     // For test purposes only
-    PermutationGenerator generator;
-    auto colors = generator.generate(8);
-    no_args_run_uniform();
-    no_args_run_substring();
-    no_args_run_brute();
+//    PermutationGenerator generator;
+//    auto colors = generator.generate(8);
+//    no_args_run_uniform();
+//    no_args_run_substring();
+//    no_args_run_brute();
 
-//    if(argc < 2){
-//        std::cout << "Too few arguments" << std::endl;
-//        return 0;
-//    }
-//    /*
-//     * interactive mode
-//     * ./aal_cmyk -i
-//     */
-//    if(cmdOptionExists(argv, argv + argc, "-i"))
-//    {
-//        std::cout << "interactive works" << std::endl;
-//    }
-//    /*
-//    * instance mode
-//    * ./aal_cmyk -s <problem size> <generator type> -f <result file>
-//    */
-//    else if(cmdOptionExists(argv, argv + argc, "-s"))
-//    {
-//        auto problemSize_ = argv[2];
-//        auto generatorMode_ = argv[3];
-//        char *filename_ = getCmdOption(argv, argv + argc, "-f");
-//
-//        int problemSize = atoi(problemSize_);
-//        if(problemSize < 0){
-//            std::cout << "Invalid problem size: " << problemSize << std::endl;
-//            return 0;
-//        }
-//        int generatorMode = atoi(generatorMode_);
-//        if(generatorMode < 0 || generatorMode > 3){
-//            std::cout << "Invalid generator mode: " << generatorMode << std::endl;
-//            return 0;
-//        }
-//        //generator execution
-//        //algorithm execution
-//
-//        if(filename_){
-//            // File result saving
-//        }
-//        else{
-//            std::cout << "Output file was not specified" << std::endl;
-//        }
-//    }
-//    /*
-//    * testing mode
-//    * ./aal_cmyk -t <problem size> <step> <iteration number> <generator type> -f <result file>
-//    */
-//    else if(cmdOptionExists(argv, argv + argc, "-t"))
-//    {
-//        auto problemSize_ = argv[2];
-//        auto step_ = argv[3];
-//        auto iterations_ = argv[4];
-//        auto generatorMode_ = argv[5];
-//        char *filename_ = getCmdOption(argv, argv + argc, "-f");
-//
-//        int problemSize = atoi(problemSize_);
-//        int step = atoi(step_);
-//        int iterations = atoi(iterations_);
-//
-//        if(problemSize < 0){
-//            std::cout << "Invalid problem size: " << problemSize << std::endl;
-//            return 0;
-//        }
-//        int generatorMode = atoi(generatorMode_);
-//        if(generatorMode < 0 || generatorMode > 3){
-//            std::cout << "Invalid generator mode: " << generatorMode << std::endl;
-//            return 0;
-//        }
-//        if(step < 0){
-//            std::cout << "Invalid step: " << step << std::endl;
-//            return 0;
-//        }
-//        if(iterations < 0){
-//            std::cout << "Invalid iterations: " << iterations << std::endl;
-//            return 0;
-//        }
-//
-//        if(filename_){
-//            //File opening
-//        }
-//        else{
-//            std::cout << "Output file was not specified" << std::endl;
-//            return 0;
-//        }
-//
-//        for(int i = 0; i < iterations; ++i){
-//            //wywołanie generatora
-//            //wywołanie algorytmu
-//            //zapis do pliku
-//        }
-//    }
-//    else if(cmdOptionExists(argv, argv + argc, "-h"))
-//    {
-//        std::cout << "Interactive mode:  " << "./aal_cmyk -i" << std::endl;
-//        std::cout << "Instance mode:     " << "./aal_cmyk -s <problem size> <generator mode> -f <output file>" << std::endl;
-//        std::cout << "Testing mode:      " << "./aal_cmyk -t <problem size> <step> <number of iterations> <generator mode> -f <output file>" << std::endl;
-//    }
+    if(argc < 2){
+        std::cout << "Too few arguments" << std::endl;
+        return 0;
+    }
+    /*
+     * interactive mode
+     * ./aal_cmyk -i
+     */
+    if(cmdOptionExists(argv, argv + argc, "-i"))
+    {
+        std::cout << "---INTERACTIVE MODE---" << std::endl;
+        std::cout << "Enter problem instance: ";
+        std::string inputString;
+        std::cin >> inputString;
+        if(inputString.size() < 6){
+            std::cout << "Problem cannot be solved" << std::endl;
+            return 0;
+        }
+        std::transform(inputString.begin(), inputString.end(), inputString.begin(), ::toupper);
+        if(check_string(inputString)){
+            std::cout << "Incorrect input" << std::endl;
+            return 0;
+        }
+        std::vector<char> colors;
+        for(auto &elem : inputString){
+            colors.push_back(elem);
+        }
+        auto universal = colors;
+        auto universalList = universal_sort(universal);
+        std::cout << "---universal sort---" << std::endl;
+        simulate(universal, universalList, true);
+        print_vector(universal, std::cout);
+
+        auto substring = colors;
+        auto substringList = substrings_sort(substring);
+        std::cout << "---substring sort---" << std::endl;
+        simulate(substring, substringList, true);
+        print_vector(substring, std::cout);
+
+        auto brute = colors;
+        auto bruteList = brute_force_sort(brute);
+        std::cout << "---brute force---" << std::endl;
+        simulate(brute, bruteList, true);
+        print_vector(brute, std::cout);
+
+    }
+    /*
+    * instance mode
+    * ./aal_cmyk -s <problem size> <generator type> -f <result file>
+    */
+    else if(cmdOptionExists(argv, argv + argc, "-s"))
+    {
+        auto problemSize_ = argv[2];
+        auto generatorMode_ = argv[3];
+        char *filename_ = getCmdOption(argv, argv + argc, "-f");
+
+        int problemSize = atoi(problemSize_);
+        if(problemSize < 0){
+            std::cout << "Invalid problem size: " << problemSize << std::endl;
+            return 0;
+        }
+        int generatorMode = atoi(generatorMode_);
+        if(generatorMode < 0 || generatorMode > 3){
+            std::cout << "Invalid generator mode: " << generatorMode << std::endl;
+            return 0;
+        }
+        //generator execution
+        //algorithm execution
+
+        if(filename_){
+            // File result saving
+        }
+        else{
+            std::cout << "Output file was not specified" << std::endl;
+        }
+    }
+    /*
+    * testing mode
+    * ./aal_cmyk -t <problem size> <step> <iteration number> <generator type> -f <result file>
+    */
+    else if(cmdOptionExists(argv, argv + argc, "-t"))
+    {
+        auto problemSize_ = argv[2];
+        auto step_ = argv[3];
+        auto iterations_ = argv[4];
+        auto generatorMode_ = argv[5];
+        char *filename_ = getCmdOption(argv, argv + argc, "-f");
+
+        int problemSize = atoi(problemSize_);
+        int step = atoi(step_);
+        int iterations = atoi(iterations_);
+
+        if(problemSize < 0){
+            std::cout << "Invalid problem size: " << problemSize << std::endl;
+            return 0;
+        }
+        int generatorMode = atoi(generatorMode_);
+        if(generatorMode < 0 || generatorMode > 3){
+            std::cout << "Invalid generator mode: " << generatorMode << std::endl;
+            return 0;
+        }
+        if(step < 0){
+            std::cout << "Invalid step: " << step << std::endl;
+            return 0;
+        }
+        if(iterations < 0){
+            std::cout << "Invalid iterations: " << iterations << std::endl;
+            return 0;
+        }
+
+        if(filename_){
+            //File opening
+        }
+        else{
+            std::cout << "Output file was not specified" << std::endl;
+            return 0;
+        }
+
+        for(int i = 0; i < iterations; ++i){
+            //wywołanie generatora
+            //wywołanie algorytmu
+            //zapis do pliku
+        }
+    }
+    else if(cmdOptionExists(argv, argv + argc, "-h"))
+    {
+        std::cout << "Interactive mode:  " << "./aal_cmyk -i" << std::endl;
+        std::cout << "Instance mode:     " << "./aal_cmyk -s <problem size> <generator mode> -f <output file>" << std::endl;
+        std::cout << "Testing mode:      " << "./aal_cmyk -t <problem size> <step> <number of iterations> <generator mode> -f <output file>" << std::endl;
+    }
     return 0;
 }
