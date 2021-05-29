@@ -21,7 +21,7 @@ protected:
 
 public:
     DataGenerator();
-
+    virtual ~DataGenerator() = default;
     virtual colors generate(size_t length) = 0;
 };
 
@@ -36,7 +36,7 @@ private:
 public:
     ParametricGenerator();
     ParametricGenerator(double c_p, double m_p, double y_p, double k_p);
-
+    ~ParametricGenerator() = default;
     colors generate(size_t length) override;
 };
 
@@ -50,7 +50,7 @@ private:
 
 public:
     SubstringGenerator(double substr_prob, double mean_substr, double stddev_substr);
-
+    ~SubstringGenerator() = default;
     colors generate(size_t length) override;
 };
 
