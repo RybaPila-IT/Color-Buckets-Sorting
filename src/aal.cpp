@@ -160,7 +160,7 @@ int main(int argc, char * argv[])
     }
     /*
     * instance mode
-    * ./aal_cmyk -s <problem size> <generator type> -f <result file>
+    * ./aal_cmyk -s <problem size> <generator type> -us -ss -bs -f <result file>
     */
     else if(cmdOptionExists(argv, argv + argc, "-s"))
     {
@@ -202,43 +202,50 @@ int main(int argc, char * argv[])
             }
             auto colors = generator->generate(problemSize);
 
-            auto universal = colors;
-            auto begin = std::chrono::high_resolution_clock::now();
-            auto universalList = universal_sort(universal);
-            auto end = std::chrono::high_resolution_clock::now();
-            auto time = get_time(begin, end);
+            if(cmdOptionExists(argv, argv + argc, "-us")){
+                auto universal = colors;
+                auto begin = std::chrono::high_resolution_clock::now();
+                auto universalList = universal_sort(universal);
+                auto end = std::chrono::high_resolution_clock::now();
+                auto time = get_time(begin, end);
 
-            simulate(universal, universalList, false);
-            print_diagnostics("universal sort", colors, universal, colors.size(), time, universalList.size(), std::cout, 0);
-            if(fileFlag)
-                print_diagnostics("universal sort", colors, universal, colors.size(), time, universalList.size(), filename.value(), 0);
-
-            auto substring = colors;
-            begin = std::chrono::high_resolution_clock::now();
-            auto substringList = substrings_sort(substring);
-            end = std::chrono::high_resolution_clock::now();
-            time = get_time(begin, end);
-
-            simulate(substring, substringList, false);
-            print_diagnostics("substring sort", colors, substring, colors.size(), time, substringList.size(), std::cout, 0);
-            if(fileFlag)
-                print_diagnostics("substring sort", colors, substring, colors.size(), time, substringList.size(), filename.value(), 0);
-
-            auto brute = colors;
-            begin = std::chrono::high_resolution_clock::now();
-            auto bruteList = brute_force_sort(brute);
-            end = std::chrono::high_resolution_clock::now();
-            time = get_time(begin, end);
-            if(bruteList.empty()){
-                std::cout << "Nie udalo sie rozwiac problemu" << std::endl;
-                return 0;
+                simulate(universal, universalList, false);
+                print_diagnostics("universal sort", colors, universal, colors.size(), time, universalList.size(), std::cout, 0);
+                if(fileFlag)
+                    print_diagnostics("universal sort", colors, universal, colors.size(), time, universalList.size(), filename.value(), 0);
             }
+            if(cmdOptionExists(argv, argv + argc, "-ss")) {
+                auto substring = colors;
+                auto begin = std::chrono::high_resolution_clock::now();
+                auto substringList = substrings_sort(substring);
+                auto end = std::chrono::high_resolution_clock::now();
+                auto time = get_time(begin, end);
 
-            simulate(brute, bruteList, false);
-            print_diagnostics("brute force sort", colors, brute, colors.size(), time, bruteList.size(), std::cout, 0);
-            if(fileFlag)
-                print_diagnostics("brute force sort", colors, brute, colors.size(), time, bruteList.size(), filename.value(), 0);
+                simulate(substring, substringList, false);
+                print_diagnostics("substring sort", colors, substring, colors.size(), time, substringList.size(),
+                                  std::cout, 0);
+                if (fileFlag)
+                    print_diagnostics("substring sort", colors, substring, colors.size(), time, substringList.size(),
+                                      filename.value(), 0);
+            }
+            if(cmdOptionExists(argv, argv + argc, "-bs")) {
+                auto brute = colors;
+                auto begin = std::chrono::high_resolution_clock::now();
+                auto bruteList = brute_force_sort(brute);
+                auto end = std::chrono::high_resolution_clock::now();
+                auto time = get_time(begin, end);
+                if (bruteList.empty()) {
+                    std::cout << "Nie udalo sie rozwiac problemu" << std::endl;
+                    return 0;
+                }
 
+                simulate(brute, bruteList, false);
+                print_diagnostics("brute force sort", colors, brute, colors.size(), time, bruteList.size(), std::cout,
+                                  0);
+                if (fileFlag)
+                    print_diagnostics("brute force sort", colors, brute, colors.size(), time, bruteList.size(),
+                                      filename.value(), 0);
+            }
         }
         else
             std::cout << "Problem size was not specified" << std::endl;
@@ -248,15 +255,40 @@ int main(int argc, char * argv[])
     }
     /*
     * testing mode
-    * ./aal_cmyk -t <problem size> <step> <iteration number> <generator type> -f <result file>
+    * ./aal_cmyk -t -gp/-gs/-gns <problem size> <step> <number of iterations> -f <output file>
     */
     else if(cmdOptionExists(argv, argv + argc, "-t"))
     {
-        auto problemSize_ = argv[2];
-        auto step_ = argv[3];
-        auto iterations_ = argv[4];
-        auto generatorMode_ = argv[5];
+        char *problemSize_;
+        DataGenerator *generator;
+        std::optional<std::fstream> filename;
+        if(cmdOptionExists(argv, argv + argc, "-gp")){
+            problemSize_ = getCmdOption(argv, argv + argc, "-gp");
+            generator = new ParametricGenerator();
+        }
+        else if(cmdOptionExists(argv, argv + argc, "-gs")){
+            problemSize_ = getCmdOption(argv, argv + argc, "-gs");
+            generator = new SubstringGenerator(0.6, 8, 5);
+        }
+        else if(cmdOptionExists(argv, argv + argc, "-gns")){
+            problemSize_ = getCmdOption(argv, argv + argc, "-gns");
+            generator = new SubstringGenerator(0.0, 8, 5);
+        }
+        else{
+            std::cout << "No generator was specified" << std::endl;
+            return 0;
+        }
+
         char *filename_ = getCmdOption(argv, argv + argc, "-f");
+        if(filename_){
+            filename = open_file(filename_);
+            if(filename.has_value())
+                fileFlag = true;
+            else
+                std::cout << "Could not open file" << filename_ << std::endl;
+        }
+        auto step_ = argv[4];
+        auto iterations_ = argv[5];
 
         int problemSize = atoi(problemSize_);
         int step = atoi(step_);
@@ -264,11 +296,6 @@ int main(int argc, char * argv[])
 
         if(problemSize < 0){
             std::cout << "Invalid problem size: " << problemSize << std::endl;
-            return 0;
-        }
-        int generatorMode = atoi(generatorMode_);
-        if(generatorMode < 0 || generatorMode > 3){
-            std::cout << "Invalid generator mode: " << generatorMode << std::endl;
             return 0;
         }
         if(step < 0){
