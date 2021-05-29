@@ -35,6 +35,7 @@ public:
     Node root;
 };
 
+InstructionList brute_force_sort(const std::vector<char>& colors);
 InstructionList universal_sort(const std::vector<char>& colors);
 InstructionList substrings_sort(const std::vector<char>& colors);
 

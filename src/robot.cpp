@@ -5,6 +5,10 @@
 
 InstructionList::InstructionList(): current_instruction(0), instructions() {}
 
+bool InstructionList::empty() {
+    return instructions.empty();
+}
+
 void InstructionList::add_instruction(uint order) {
     instructions.push_back(order);
 }
