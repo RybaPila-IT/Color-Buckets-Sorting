@@ -2,8 +2,8 @@
 // Created by radoslaw on 24.05.2021.
 //
 
-#ifndef AAL_CMYK_ROBOT_H
-#define AAL_CMYK_ROBOT_H
+#ifndef AAL_CMYK_ROBOT_HPP
+#define AAL_CMYK_ROBOT_HPP
 
 #include <vector>
 
@@ -33,4 +33,4 @@ public:
 
 
 
-#endif //AAL_CMYK_ROBOT_H
+#endif //AAL_CMYK_ROBOT_HPP

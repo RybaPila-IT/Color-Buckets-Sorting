@@ -1,6 +1,6 @@
 #include "data_generator.hpp"
 #include "alg_sort.hpp"
-#include "robot.h"
+#include "robot.hpp"
 #include "utils.hpp"
 #include <iostream>
 #include <chrono>
@@ -22,8 +22,6 @@
 //}
 
 void simulate(std::vector<char>& colors, InstructionList& list) {
-  
-    std::cout << "List len: " << list.size() << std::endl;
     Robot::sort(colors, list);
 }
 
@@ -33,11 +31,11 @@ void no_args_run_uniform() {
 
     //std::vector<char> colors({'C', 'C', 'M','M', 'Y', 'Y', 'K', 'K'});
     //std::vector<char> colors({'C', 'Y', 'Y','M', 'C', 'M', 'Y', 'K'});
-    DataGenerator generator;
+    ParametricGenerator generator;
     std::vector<char> colors;
     //colors = generator.parametric_generator(200, 0.25, 0.25, 0.25, 0.25).value();
     //colors = std::vector<char>({'M', 'C', 'Y', 'K', 'C', 'M', 'Y', 'K'});
-    colors = generator.parametric_generator(50, 0.25, 0.25, 0.25, 0.25).value();
+    colors = generator.generate(200);
     auto original = colors;
     //colors = generator.substring_generator(80 , 1.0, 8, 5);
     auto begin = std::chrono::high_resolution_clock::now();
@@ -49,16 +47,16 @@ void no_args_run_uniform() {
     auto time = get_time(begin, end);
     auto file = open_file("test.txt");
     if(file.has_value())
-        print_diagnostics("test", original, colors, 50, time, list.size(), file.value(), 1);
+        print_diagnostics("test", original, colors, colors.size(), time, list.size(), file.value(), 1);
 
-    print_diagnostics("uniform sort", original, colors, 50, time, list.size(), std::cout, 0);
+    print_diagnostics("uniform sort", original, colors, colors.size(), time, list.size(), std::cout, 0);
 }
 
 void no_args_run_substring() {
 
     std::cout << "Run substring sort;" << std::endl;
 
-    DataGenerator generator;
+    SubstringGenerator generator(0.6, 8, 5);
 
     std::vector<char> colors;
 
@@ -66,7 +64,7 @@ void no_args_run_substring() {
     //colors = std::vector<char>({'M', 'M', 'Y', 'C', 'M', 'Y', 'K', 'C', 'M', 'M', 'C', 'M', 'Y'});
     //colors = std::vector<char>({'K', 'C', 'Y', 'K', 'C', 'M', 'Y', 'M'});
     //colors = std::vector<char>({'K', 'C', 'Y', 'C', 'C', 'M', 'Y', 'K', 'C', 'M', 'Y', 'K', 'Y', 'M', 'C', 'K', 'C', 'M','Y', 'K'});
-    colors = generator.substring_generator(80 , 1.0, 8, 5);
+    colors = generator.generate(200);
     auto original = colors;
 
     auto begin = std::chrono::high_resolution_clock::now();
@@ -81,8 +79,8 @@ void no_args_run_substring() {
 void no_args_run_brute() {
 
     std::cout << "Run brute-force sort" << std::endl;
-    DataGenerator generator;
-    auto colors = generator.parametric_generator(11, 0.25, 0.25, 0.25, 0.25).value();
+    ParametricGenerator generator;
+    auto colors = generator.generate(9);
     auto colors_cpy = colors;
 
     auto begin = std::chrono::high_resolution_clock::now();
@@ -102,6 +100,8 @@ void no_args_run_brute() {
 int main(/*int argc, char * argv[]*/)
 {
     // For test purposes only
+    PermutationGenerator generator;
+    auto colors = generator.generate(8);
     no_args_run_uniform();
     no_args_run_substring();
     no_args_run_brute();

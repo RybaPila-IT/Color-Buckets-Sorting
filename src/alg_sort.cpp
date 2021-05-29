@@ -190,8 +190,6 @@ namespace {
 
     }
 
-
-
 }
 
 InstructionList universal_sort(const std::vector<char>& colors) {
@@ -203,7 +201,6 @@ InstructionList universal_sort(const std::vector<char>& colors) {
 
     return instructions;
 }
-
 
 namespace {
 
@@ -330,9 +327,7 @@ InstructionList substrings_sort(const std::vector<char>& colors) {
 
     } while (l_end < (int) colors_.size() - unsorted_threshold);
 
-
     _universal_sort(colors_, l_end, patt_ptr, list);
 
     return list;
 }
-

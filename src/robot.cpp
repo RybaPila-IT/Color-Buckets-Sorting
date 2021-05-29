@@ -1,6 +1,6 @@
 #include <stdexcept>
 
-#include "robot.h"
+#include "robot.hpp"
 #include "constants.hpp"
 
 InstructionList::InstructionList(): current_instruction(0), instructions() {}

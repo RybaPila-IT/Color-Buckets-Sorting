@@ -2,7 +2,7 @@
 #define AAL_CMYK_ALG_SORT_HPP
 
 #include <vector>
-#include "robot.h"
+#include "robot.hpp"
 
 InstructionList brute_force_sort(const std::vector<char>& colors);
 InstructionList universal_sort(const std::vector<char>& colors);
