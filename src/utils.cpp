@@ -3,6 +3,7 @@
 //
 #include "utils.hpp"
 #include "constants.hpp"
+#include "data_generator.hpp"
 
 std::optional<std::fstream> open_file(const std::string filename){
     std::fstream file;
@@ -43,4 +44,25 @@ void print_diagnostics(const std::string algName, const std::vector<char> &probl
         default:
             break;
     }
+}
+
+size_t max_unsorted_length(const std::vector<char> &dataVector){
+    size_t CMYKCount[4] = {0};
+    for(auto &color : dataVector){
+        switch(color){
+            case 'C':
+                ++CMYKCount[0];
+                break;
+            case 'M':
+                ++CMYKCount[1];
+                break;
+            case 'Y':
+                ++CMYKCount[2];
+                break;
+            case 'K':
+                ++CMYKCount[3];
+                break;
+        }
+    }
+    return dataVector.size() - (*std::min_element(CMYKCount, CMYKCount + 4) * 4);
 }

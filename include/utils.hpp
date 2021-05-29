@@ -25,4 +25,6 @@ void print_diagnostics(const std::string algName, const std::vector<char> &probl
                        const std::chrono::duration<double, std::milli> time, const size_t numSteps,
                        std::ostream &os, const int mode);
 
+size_t max_unsorted_length(const std::vector<char> &dataVector);
+
 #endif //AAL_CMYK_UTILS_HPP

@@ -21,16 +21,10 @@
 //    return std::find(begin, end, option) != end;
 //}
 
-
-
 void simulate(std::vector<char>& colors, InstructionList& list) {
   
     std::cout << "List len: " << list.size() << std::endl;
     Robot::sort(colors, list);
-
-//    for (auto& c : colors)
-//        std::cout << c << " ";
-//    std::cout << std::endl;
 }
 
 void no_args_run_uniform() {
@@ -53,6 +47,10 @@ void no_args_run_uniform() {
     simulate(colors, list);
 
     auto time = get_time(begin, end);
+    auto file = open_file("test.txt");
+    if(file.has_value())
+        print_diagnostics("test", original, colors, 50, time, list.size(), file.value(), 1);
+
     print_diagnostics("test", original, colors, 50, time, list.size(), std::cout, 0);
 }
 
@@ -84,7 +82,8 @@ void no_args_run_brute() {
 
     Graph graph;
     graph.gen_graph(colors);
-    auto test = graph.perform_search(8, 4);
+
+    auto test = graph.perform_search(colors.size(), max_unsorted_length(colors));
     if(!test.has_value())
         return;
     InstructionList list2;
@@ -130,7 +129,11 @@ int main(/*int argc, char * argv[]*/)
 //            std::cout << "Invalid problem size: " << problemSize << std::endl;
 //            return 0;
 //        }
-//
+//        int generatorMode = atoi(generatorMode_);
+//        if(generatorMode < 0 || generatorMode > 3){
+//            std::cout << "Invalid generator mode: " << generatorMode << std::endl;
+//            return 0;
+//        }
 //        //generator execution
 //        //algorithm execution
 //
@@ -161,6 +164,11 @@ int main(/*int argc, char * argv[]*/)
 //            std::cout << "Invalid problem size: " << problemSize << std::endl;
 //            return 0;
 //        }
+//        int generatorMode = atoi(generatorMode_);
+//        if(generatorMode < 0 || generatorMode > 3){
+//            std::cout << "Invalid generator mode: " << generatorMode << std::endl;
+//            return 0;
+//        }
 //        if(step < 0){
 //            std::cout << "Invalid step: " << step << std::endl;
 //            return 0;
@@ -186,9 +194,9 @@ int main(/*int argc, char * argv[]*/)
 //    }
 //    else if(cmdOptionExists(argv, argv + argc, "-h"))
 //    {
-//        cout << "Interactive mode:  " << "./aal_cmyk -i" << endl;
-//        cout << "Instance mode:     " << "./aal_cmyk -s <problem size> <generator mode> -f <output file>" << endl;
-//        cout << "Testing mode:      " << "./aal_cmyk -t <problem size> <step> <number of iterations> <generator mode> -f <output file>" << endl;
+//        std::cout << "Interactive mode:  " << "./aal_cmyk -i" << std::endl;
+//        std::cout << "Instance mode:     " << "./aal_cmyk -s <problem size> <generator mode> -f <output file>" << std::endl;
+//        std::cout << "Testing mode:      " << "./aal_cmyk -t <problem size> <step> <number of iterations> <generator mode> -f <output file>" << std::endl;
 //    }
     return 0;
 }
