@@ -93,8 +93,8 @@ bool Graph::find_with_trace(Node &parent, Node &node, uint unordered, std::deque
 }
 
 std::optional<std::deque<size_t>> Graph::perform_search(size_t length, uint unordered) {
-    DataGenerator dataGenerator;
-    std::vector<char> dataVector = dataGenerator.substring_generator(length, 1.0, 10, 0);
+    SubstringGenerator dataGenerator(1.0, 10, 0);
+    std::vector<char> dataVector = dataGenerator.generate(length);
 
     std::deque<char> dataDeque;
     std::cout << "TEST" << std::endl;
@@ -214,8 +214,6 @@ namespace {
 
     }
 
-
-
 }
 
 InstructionList universal_sort(const std::vector<char>& colors) {
@@ -227,7 +225,6 @@ InstructionList universal_sort(const std::vector<char>& colors) {
 
     return instructions;
 }
-
 
 namespace {
 
@@ -354,9 +351,7 @@ InstructionList substrings_sort(const std::vector<char>& colors) {
 
     } while (l_end < (int) colors_.size() - unsorted_threshold);
 
-
     _universal_sort(colors_, l_end, patt_ptr, list);
 
     return list;
 }
-

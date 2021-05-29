@@ -1,7 +1,3 @@
-//
-// Created by swirta on 28.05.2021.
-//
-
 #ifndef AAL_CMYK_UTILS_HPP
 #define AAL_CMYK_UTILS_HPP
 
@@ -17,13 +13,13 @@ std::chrono::duration<double, std::milli> get_time(std::chrono::time_point<T> be
     return std::chrono::duration<double, std::milli>(end - begin);
 }
 
-std::optional<std::fstream> open_file(const std::string filename);
+std::optional<std::fstream> open_file(const std::string& filename);
 
 
-void print_diagnostics(const std::string algName, const std::vector<char> &problemInstance,
-                       const std::vector<char> &result, const size_t problemSize,
-                       const std::chrono::duration<double, std::milli> time, const size_t numSteps,
-                       std::ostream &os, const int mode);
+void print_diagnostics(const std::string& algName, const std::vector<char> &problemInstance,
+                       const std::vector<char> &result, size_t problemSize,
+                       const std::chrono::duration<double, std::milli>& time, size_t numSteps,
+                       std::ostream &os, int mode);
 
 size_t max_unsorted_length(const std::vector<char> &dataVector);
 
