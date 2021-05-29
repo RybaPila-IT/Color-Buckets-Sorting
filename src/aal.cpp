@@ -255,7 +255,7 @@ int main(int argc, char * argv[])
     }
     /*
     * testing mode
-    * ./aal_cmyk -t -gp/-gs/-gns <problem size> <step> <number of iterations> -f <output file>
+    * ./aal_cmyk -t -gp/-gs/-gns <problem size> <step> <number of iterations> -us -ss -bs -f <output file>
     */
     else if(cmdOptionExists(argv, argv + argc, "-t"))
     {
@@ -290,42 +290,76 @@ int main(int argc, char * argv[])
         auto step_ = argv[4];
         auto iterations_ = argv[5];
 
-        int problemSize = atoi(problemSize_);
-        int step = atoi(step_);
-        int iterations = atoi(iterations_);
+        if(problemSize_) {
+            int problemSize = atoi(problemSize_);
+            int step = atoi(step_);
+            int iterations = atoi(iterations_);
+            if (problemSize <= 0) {
+                std::cout << "Invalid problem size: " << problemSize << std::endl;
+                delete generator;
+                return 0;
+            }
+            if(step <= 0){
+                std::cout << "Invalid step: " << step << std::endl;
+                return 0;
+            }
+            if(iterations <= 0){
+                std::cout << "Invalid iterations: " << iterations << std::endl;
+                return 0;
+            }
+            for(int i = 0; i < iterations; ++i){
+                auto colors = generator->generate(problemSize + i*step);
 
-        if(problemSize < 0){
-            std::cout << "Invalid problem size: " << problemSize << std::endl;
-            return 0;
-        }
-        if(step < 0){
-            std::cout << "Invalid step: " << step << std::endl;
-            return 0;
-        }
-        if(iterations < 0){
-            std::cout << "Invalid iterations: " << iterations << std::endl;
-            return 0;
-        }
+                if(cmdOptionExists(argv, argv + argc, "-us")){
+                    auto universal = colors;
+                    auto begin = std::chrono::high_resolution_clock::now();
+                    auto universalList = universal_sort(universal);
+                    auto end = std::chrono::high_resolution_clock::now();
+                    auto time = get_time(begin, end);
 
-        if(filename_){
-            //File opening
+                    simulate(universal, universalList, false);
+                    if(fileFlag)
+                        print_diagnostics("universal sort", colors, universal, colors.size(), time, universalList.size(), filename.value(), 1);
+                }
+                if(cmdOptionExists(argv, argv + argc, "-ss")) {
+                    auto substring = colors;
+                    auto begin = std::chrono::high_resolution_clock::now();
+                    auto substringList = substrings_sort(substring);
+                    auto end = std::chrono::high_resolution_clock::now();
+                    auto time = get_time(begin, end);
+
+                    simulate(substring, substringList, false);
+                    if (fileFlag)
+                        print_diagnostics("substring sort", colors, substring, colors.size(), time, substringList.size(),filename.value(), 1);
+                }
+                if(cmdOptionExists(argv, argv + argc, "-bs")) {
+                    auto brute = colors;
+                    auto begin = std::chrono::high_resolution_clock::now();
+                    auto bruteList = brute_force_sort(brute);
+                    auto end = std::chrono::high_resolution_clock::now();
+                    auto time = get_time(begin, end);
+                    if (bruteList.empty()) {
+                        std::cout << "Nie udalo sie rozwiac problemu" << std::endl;
+                        return 0;
+                    }
+
+                    simulate(brute, bruteList, false);
+                    if (fileFlag)
+                        print_diagnostics("brute force sort", colors, brute, colors.size(), time, bruteList.size(),filename.value(), 1);
+                }
+            }
         }
-        else{
+        else
+            std::cout << "Problem size was not specified" << std::endl;
+
+        if(!fileFlag)
             std::cout << "Output file was not specified" << std::endl;
-            return 0;
-        }
-
-        for(int i = 0; i < iterations; ++i){
-            //wywołanie generatora
-            //wywołanie algorytmu
-            //zapis do pliku
-        }
     }
     else if(cmdOptionExists(argv, argv + argc, "-h"))
     {
         std::cout << "Interactive mode:  " << "./aal_cmyk -i" << std::endl;
-        std::cout << "Instance mode:     " << "./aal_cmyk -s -gp/-gs/-gns <problem size> -f <output file>" << std::endl;
-        std::cout << "Testing mode:      " << "./aal_cmyk -t -gp/-gs/-gns <problem size> <step> <number of iterations> -f <output file>" << std::endl;
+        std::cout << "Instance mode:     " << "./aal_cmyk -s <problem size> <generator type> -us -ss -bs -f <result file>" << std::endl;
+        std::cout << "Testing mode:      " << "./aal_cmyk -t -gp/-gs/-gns <problem size> <step> <number of iterations> -us -ss -bs -f <output file>" << std::endl;
     }
     return 0;
 }
