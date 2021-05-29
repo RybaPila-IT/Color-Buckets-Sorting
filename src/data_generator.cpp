@@ -1,7 +1,6 @@
 #include "data_generator.hpp"
 #include <algorithm>
 
-
 void DataGenerator::generate_collection(size_t length, std::array<std::pair<double, char>, 4> cmykProb,
                                                      std::vector<char>& dataVector) {
     std::mt19937_64 randomEngine(randomDevice());
