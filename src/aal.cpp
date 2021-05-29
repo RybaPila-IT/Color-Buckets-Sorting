@@ -51,7 +51,7 @@ void no_args_run_uniform() {
     if(file.has_value())
         print_diagnostics("test", original, colors, 50, time, list.size(), file.value(), 1);
 
-    print_diagnostics("test", original, colors, 50, time, list.size(), std::cout, 0);
+    print_diagnostics("uniform sort", original, colors, 50, time, list.size(), std::cout, 0);
 }
 
 void no_args_run_substring() {
@@ -67,31 +67,43 @@ void no_args_run_substring() {
     //colors = std::vector<char>({'K', 'C', 'Y', 'K', 'C', 'M', 'Y', 'M'});
     //colors = std::vector<char>({'K', 'C', 'Y', 'C', 'C', 'M', 'Y', 'K', 'C', 'M', 'Y', 'K', 'Y', 'M', 'C', 'K', 'C', 'M','Y', 'K'});
     colors = generator.substring_generator(80 , 1.0, 8, 5);
+    auto original = colors;
 
+    auto begin = std::chrono::high_resolution_clock::now();
     auto list = substrings_sort(colors);
+    auto end = std::chrono::high_resolution_clock::now();
+    auto time = get_time(begin, end);
 
     simulate(colors, list);
+    print_diagnostics("substring sort", original, colors, colors.size(), time, list.size(), std::cout, 0);
 }
 
 void no_args_run_brute() {
 
     std::cout << "Run brute-force sort" << std::endl;
     DataGenerator generator;
-    auto colors = generator.parametric_generator(8, 0.25, 0.25, 0.25, 0.25).value();
+    auto colors = generator.parametric_generator(9, 0.25, 0.25, 0.25, 0.25).value();
     auto colors_cpy = colors;
 
     Graph graph;
+    auto begin = std::chrono::high_resolution_clock::now();
     graph.gen_graph(colors);
 
     auto test = graph.perform_search(colors.size(), max_unsorted_length(colors));
-    if(!test.has_value())
+    auto end = std::chrono::high_resolution_clock::now();
+    if(!test.has_value()){
+        std::cout << "Nie udalo sie rozwiac problemu" << std::endl;
         return;
-    InstructionList list2;
-    for(auto &e : test.value()){
-        list2.add_instruction(e);
     }
 
-    simulate(colors_cpy, list2);
+    InstructionList list;
+    for(auto &e : test.value()){
+        list.add_instruction(e);
+    }
+
+    auto time = get_time(begin, end);
+    simulate(colors_cpy, list);
+    print_diagnostics("brute force", colors, colors_cpy, colors.size(), time, list.size(), std::cout, 0);
 }
 
 

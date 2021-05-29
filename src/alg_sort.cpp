@@ -97,9 +97,12 @@ std::optional<std::deque<size_t>> Graph::perform_search(size_t length, uint unor
     std::vector<char> dataVector = dataGenerator.substring_generator(length, 1.0, 10, 0);
 
     std::deque<char> dataDeque;
+    std::cout << "TEST" << std::endl;
     for(auto &elem : dataVector){
         dataDeque.push_back(elem);
+        std::cout << elem << ", ";
     }
+    std::cout << std::endl;
 
     Node node = Node(dataDeque);
     std::deque<size_t> instructions;
