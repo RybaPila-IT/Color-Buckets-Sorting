@@ -3,7 +3,6 @@
 //
 #include "utils.hpp"
 #include "constants.hpp"
-#include "data_generator.hpp"
 
 std::optional<std::fstream> open_file(const std::string filename){
     std::fstream file;

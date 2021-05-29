@@ -85,22 +85,10 @@ void no_args_run_brute() {
     auto colors = generator.parametric_generator(11, 0.25, 0.25, 0.25, 0.25).value();
     auto colors_cpy = colors;
 
-//    Graph graph;
     auto begin = std::chrono::high_resolution_clock::now();
-//    graph.gen_graph(colors);
-//
-//    auto test = graph.perform_search(colors.size(), max_unsorted_length(colors));
     auto list = brute_force_sort(colors);
     auto end = std::chrono::high_resolution_clock::now();
-//    if(!test.has_value()){
-//        std::cout << "Nie udalo sie rozwiac problemu" << std::endl;
-//        return;
-//    }
-//
-//    InstructionList list;
-//    for(auto &e : test.value()){
-//        list.add_instruction(e);
-//    }
+
     if(list.empty()){
         std::cout << "Nie udalo sie rozwiac problemu" << std::endl;
         return;
