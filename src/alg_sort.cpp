@@ -6,9 +6,9 @@
 #include "constants.hpp"
 #include "utils.hpp"
 
-bool equal(const std::deque<char> &left, const std::deque<char> &rigth, size_t unordered){
-    for(size_t i = 0; i < rigth.size() - unordered; ++i){
-        if(left[i] != rigth[i])
+bool equal(const std::deque<char> &left, const std::deque<char> &right, size_t unordered){
+    for(size_t i = 0; i < right.size() - unordered; ++i){
+        if(left[i] != right[i])
             return false;
     }
     return true;
@@ -33,7 +33,7 @@ std::deque<char> generate_terminal_node(size_t length){
                 break;
         }
     }
-    return std::move(terminalNode);
+    return terminalNode;
 }
 
 std::vector<std::pair<std::deque<char>, InstructionList>> node_permutation(std::pair<std::deque<char>, InstructionList> &node) {
@@ -50,12 +50,12 @@ std::vector<std::pair<std::deque<char>, InstructionList>> node_permutation(std::
             newNode.first.push_back(node.first[i + 2]);
             newNode.first.push_back(node.first[i + 3]);
             for(size_t j = 0; j < 4; ++j)
-                newNode.first.erase(newNode.first.begin() + i);
+                newNode.first.erase(newNode.first.begin() + (int) i);
 
             nodeVector.push_back(newNode);
         }
     }
-    return std::move(nodeVector);
+    return nodeVector;
 }
 
 InstructionList brute_force_sort(const std::vector<char>& colors){
@@ -86,7 +86,7 @@ InstructionList brute_force_sort(const std::vector<char>& colors){
                 openSet.push(permutation);
         }
     }
-    return std::move(InstructionList());
+    return InstructionList();
 }
 
 namespace {

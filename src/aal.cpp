@@ -4,7 +4,6 @@
 #include "utils.hpp"
 #include <iostream>
 #include <chrono>
-#include <cstring>
 #include <optional>
 
 char* getCmdOption(char ** begin, char ** end, const std::string & option)
@@ -46,7 +45,7 @@ void no_args_run_uniform() {
     auto list = universal_sort(colors);
     auto end = std::chrono::high_resolution_clock::now();
 
-    simulate(colors, list, 0);
+    simulate(colors, list, false);
 
     auto time = get_time(begin, end);
     auto file = open_file("test.txt");
@@ -76,7 +75,7 @@ void no_args_run_substring() {
     auto end = std::chrono::high_resolution_clock::now();
     auto time = get_time(begin, end);
 
-    simulate(colors, list, 0);
+    simulate(colors, list, false);
     print_diagnostics("substring sort", original, colors, colors.size(), time, list.size(), std::cout, 0);
 }
 
@@ -96,7 +95,7 @@ void no_args_run_brute() {
         return;
     }
     auto time = get_time(begin, end);
-    simulate(colors_cpy, list, 0);
+    simulate(colors_cpy, list, false);
     print_diagnostics("brute force", colors, colors_cpy, colors.size(), time, list.size(), std::cout, 0);
 }
 
