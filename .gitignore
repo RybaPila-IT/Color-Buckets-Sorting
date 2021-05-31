@@ -38,6 +38,7 @@ cmake-build*
 #folders
 bin/
 build/
+test_results/
 
 #documentation
 doc/html
