@@ -28,85 +28,8 @@ void simulate(std::vector<char>& colors, InstructionList& list, bool interactive
         Robot::sort_interactive(colors, list);
 }
 
-//void no_args_run_uniform() {
-//
-//    std::cout << "Run uniform sort;" << std::endl;
-//
-//    //std::vector<char> colors({'C', 'C', 'M','M', 'Y', 'Y', 'K', 'K'});
-//    //std::vector<char> colors({'C', 'Y', 'Y','M', 'C', 'M', 'Y', 'K'});
-//    ParametricGenerator generator;
-//    std::vector<char> colors;
-//    //colors = generator.parametric_generator(200, 0.25, 0.25, 0.25, 0.25).value();
-//    //colors = std::vector<char>({'M', 'C', 'Y', 'K', 'C', 'M', 'Y', 'K'});
-//    colors = generator.generate(200);
-//    auto original = colors;
-//    //colors = generator.substring_generator(80 , 1.0, 8, 5);
-//    auto begin = std::chrono::high_resolution_clock::now();
-//    auto list = universal_sort(colors);
-//    auto end = std::chrono::high_resolution_clock::now();
-//
-//    simulate(colors, list, false);
-//
-//    auto time = get_time(begin, end);
-//    auto file = open_file("test.txt");
-//    if(file.has_value())
-//        print_diagnostics("test", original, colors, colors.size(), time, list.size(), file.value(), 1);
-//
-//    print_diagnostics("uniform sort", original, colors, colors.size(), time, list.size(), std::cout, 0);
-//}
-//
-//void no_args_run_substring() {
-//
-//    std::cout << "Run substring sort;" << std::endl;
-//
-//    SubstringGenerator generator(0.6, 8, 5);
-//
-//    std::vector<char> colors;
-//
-//    //colors = std::vector<char>({'C', 'M', 'Y', 'K', 'C', 'M', 'Y', 'K'});
-//    //colors = std::vector<char>({'M', 'M', 'Y', 'C', 'M', 'Y', 'K', 'C', 'M', 'M', 'C', 'M', 'Y'});
-//    //colors = std::vector<char>({'K', 'C', 'Y', 'K', 'C', 'M', 'Y', 'M'});
-//    //colors = std::vector<char>({'K', 'C', 'Y', 'C', 'C', 'M', 'Y', 'K', 'C', 'M', 'Y', 'K', 'Y', 'M', 'C', 'K', 'C', 'M','Y', 'K'});
-//    colors = generator.generate(200);
-//    auto original = colors;
-//
-//    auto begin = std::chrono::high_resolution_clock::now();
-//    auto list = substrings_sort(colors);
-//    auto end = std::chrono::high_resolution_clock::now();
-//    auto time = get_time(begin, end);
-//
-//    simulate(colors, list, false);
-//    print_diagnostics("substring sort", original, colors, colors.size(), time, list.size(), std::cout, 0);
-//}
-//
-//void no_args_run_brute() {
-//
-//    std::cout << "Run brute-force sort" << std::endl;
-//    ParametricGenerator generator;
-//    auto colors = generator.generate(11);
-//    auto colors_cpy = colors;
-//
-//    auto begin = std::chrono::high_resolution_clock::now();
-//    auto list = brute_force_sort(colors);
-//    auto end = std::chrono::high_resolution_clock::now();
-//
-//    if(list.empty()){
-//        std::cout << "Nie udalo sie rozwiac problemu" << std::endl;
-//        return;
-//    }
-//    auto time = get_time(begin, end);
-//    simulate(colors_cpy, list, false);
-//    print_diagnostics("brute force", colors, colors_cpy, colors.size(), time, list.size(), std::cout, 0);
-//}
-
 int main(int argc, char * argv[])
 {
-    // For test purposes only
-//    PermutationGenerator generator;
-//    auto colors = generator.generate(8);
-//    no_args_run_uniform();
-//    no_args_run_substring();
-//    no_args_run_brute();
     if(argc < 2){
         std::cout << "Too few arguments" << std::endl;
         return 0;
