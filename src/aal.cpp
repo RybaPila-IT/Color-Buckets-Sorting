@@ -322,7 +322,7 @@ int main(int argc, char * argv[])
                         simulate(universal, universalList, false);
                         if (fileFlag && j == RERUN - 1){
                             universalTime /= RERUN;
-                            print_diagnostics("universal sort", colors.size(), universalTime, universalList.size(), filename.value());
+                            print_diagnostics(colors.size(), universalTime, universalList.size(), filename.value());
                             universalTime = std::chrono::duration<double, std::milli>::zero();
                         }
                     }
@@ -337,7 +337,7 @@ int main(int argc, char * argv[])
                         simulate(substring, substringList, false);
                         if (fileFlag && j == RERUN - 1) {
                             substringTime /= RERUN;
-                            print_diagnostics("substring sort", colors.size(), substringTime, substringList.size(), filename.value());
+                            print_diagnostics(colors.size(), substringTime, substringList.size(), filename.value());
                             substringTime = std::chrono::duration<double, std::milli>::zero();
                         }
                     }
@@ -348,15 +348,13 @@ int main(int argc, char * argv[])
                         auto end = std::chrono::high_resolution_clock::now();
 //                        auto time = get_time(begin, end);
                         bruteTime += get_time(begin, end);
-                        if (bruteList.empty()) {
+                        if (bruteList.empty())
                             std::cout << "Nie udalo sie rozwiac problemu" << std::endl;
-                            continue;
-                        }
 
                         simulate(brute, bruteList, false);
                         if (fileFlag && j == RERUN - 1){
                             bruteTime /= RERUN;
-                            print_diagnostics("brute force sort", colors.size(), bruteTime, bruteList.size(), filename.value());
+                            print_diagnostics(colors.size(), bruteTime, bruteList.size(), filename.value());
                             bruteTime = std::chrono::duration<double, std::milli>::zero();
                         }
                     }

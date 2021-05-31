@@ -11,9 +11,9 @@ std::optional<std::fstream> open_file(const std::string& filename){
         return file;
 }
 
-void print_diagnostics(const std::string& algName, size_t problemSize, const std::chrono::duration<double, std::milli>& time,
+void print_diagnostics(size_t problemSize, const std::chrono::duration<double, std::milli>& time,
                        size_t numSteps, std::ostream &os){
-    os << algName << CSV_SEPARATOR << problemSize << CSV_SEPARATOR << numSteps << CSV_SEPARATOR << time.count() << std::endl;
+    os << CSV_SEPARATOR << problemSize << CSV_SEPARATOR << numSteps << CSV_SEPARATOR << time.count() << std::endl;
 }
 
 void print_diagnostics(const std::string& algName, const std::vector<char> &problemInstance,
