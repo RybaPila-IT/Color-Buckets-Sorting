@@ -43,7 +43,7 @@ void Robot::sort_interactive(std::vector<char>& colors, InstructionList& instruc
     while (instructions.instruction_left()) {
         auto idx = instructions.get_next_instruction();
 
-        print_vector(colors, std::cout);
+        print_interactive(colors, idx, std::cout);
 
         for (uint i = 0; i < PATTERN_LEN; i++)
             colors.push_back(colors[idx + i]);

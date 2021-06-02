@@ -13,7 +13,7 @@ std::optional<std::fstream> open_file(const std::string& filename){
 
 void print_diagnostics(size_t problemSize, const std::chrono::duration<double, std::milli>& time,
                        size_t numSteps, std::ostream &os){
-    os << CSV_SEPARATOR << problemSize << CSV_SEPARATOR << numSteps << CSV_SEPARATOR << time.count() << std::endl;
+    os << problemSize << CSV_SEPARATOR << numSteps << CSV_SEPARATOR << time.count() << std::endl;
 }
 
 void print_diagnostics(const std::string& algName, const std::vector<char> &problemInstance,
@@ -40,9 +40,19 @@ void print_diagnostics(const std::string& algName, const std::vector<char> &prob
 
 }
 
+void print_interactive(const std::vector<char> &colors, uint marker, std::ostream &os){
+    for(auto &color : colors)
+        os << color;
+    os << std::endl;
+
+    for(uint i = 0; i < marker; ++i)
+        os << BLANK_SPACE;
+    os << MARKER << std::endl;
+}
+
 void print_vector(const std::vector<char> &data, std::ostream &os){
     for(auto &elem : data)
-        os << elem << ", ";
+        os << elem;
     os << std::endl;
 }
 

@@ -21,6 +21,7 @@ void print_diagnostics(const std::string& algName, const std::vector<char> &prob
                        const std::vector<char> &result, size_t problemSize,
                        const std::chrono::duration<double, std::milli>& time, size_t numSteps,
                        std::ostream &os);
+void print_interactive(const std::vector<char> &colors, uint marker, std::ostream &os);
 
 void print_vector(const std::vector<char> &data, std::ostream &os);
 
