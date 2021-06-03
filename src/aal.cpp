@@ -239,12 +239,12 @@ int main(int argc, char * argv[])
                         auto begin = std::chrono::high_resolution_clock::now();
                         auto universalList = universal_sort(universal);
                         auto end = std::chrono::high_resolution_clock::now();
-//                        auto time = get_time(begin, end);
-                        universalTime += get_time(begin, end);
+                        auto time = get_time(begin, end);
 
-                        simulate(universal, universalList, false);
+                        universalTime = std::max(universalTime, time);
+
+//                        simulate(universal, universalList, false);
                         if (fileFlag && j == RERUN - 1){
-                            universalTime /= RERUN;
                             print_diagnostics(colors.size(), universalTime, universalList.size(), filename.value());
                             universalTime = std::chrono::duration<double, std::milli>::zero();
                         }
@@ -254,12 +254,12 @@ int main(int argc, char * argv[])
                         auto begin = std::chrono::high_resolution_clock::now();
                         auto substringList = substrings_sort(substring);
                         auto end = std::chrono::high_resolution_clock::now();
-//                        auto time = get_time(begin, end);
-                        substringTime += get_time(begin, end);
+                        auto time = get_time(begin, end);
 
-                        simulate(substring, substringList, false);
+                        substringTime = std::max(substringTime, time);
+
+//                        simulate(substring, substringList, false);
                         if (fileFlag && j == RERUN - 1) {
-                            substringTime /= RERUN;
                             print_diagnostics(colors.size(), substringTime, substringList.size(), filename.value());
                             substringTime = std::chrono::duration<double, std::milli>::zero();
                         }
@@ -269,14 +269,16 @@ int main(int argc, char * argv[])
                         auto begin = std::chrono::high_resolution_clock::now();
                         auto bruteList = brute_force_sort(brute);
                         auto end = std::chrono::high_resolution_clock::now();
-//                        auto time = get_time(begin, end);
-                        bruteTime += get_time(begin, end);
+                        auto time = get_time(begin, end);
+
+                        
                         if (bruteList.empty())
                             std::cout << "Nie udalo sie rozwiac problemu" << std::endl;
+                        else
+                            bruteTime = std::max(bruteTime, time);
 
-                        simulate(brute, bruteList, false);
+//                        simulate(brute, bruteList, false);
                         if (fileFlag && j == RERUN - 1){
-                            bruteTime /= RERUN;
                             print_diagnostics(colors.size(), bruteTime, bruteList.size(), filename.value());
                             bruteTime = std::chrono::duration<double, std::milli>::zero();
                         }

@@ -7,6 +7,6 @@ const char CSV_SEPARATOR = ';';
 const char PRINT_SEPARATOR = ',';
 const char BLANK_SPACE = ' ';
 const char MARKER = '^';
-const int RERUN = 15;
+const int RERUN = 7;
 
 #endif //AAL_CMYK_CONSTANTS_HPP

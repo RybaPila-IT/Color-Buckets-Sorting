@@ -8,14 +8,16 @@ from multiprocessing import Process
 #mnijeszy krok dla algorytmu brutalnego
 bruteStep = 1
 #mniejsza liczba iteracji dla algorytmu brutalnego
-bruteIterations = 3
+bruteIterations = 10
+#początkowy rozmiar problemu dla algorytmu brutalnego
+initBruteProblemSize = 10
 
 #krok
-step = 10
+step = 500
 #liczba iteracji
 iterations = 100
 #poczatkowy rozmiar problemu
-initProblemSize = 10
+initProblemSize = 500
 #typy generatorów 
 generators = ["-gp", "-gs", "-gns"]
 #folder 
@@ -41,7 +43,7 @@ def test_substring_sort(executable : str, generator : str):
 def test_brute_sort(executable : str, generator : str):
     filename = "brute_force_sort_" + "generator:%s_step:%d_iterations:%d.txt"%(generator, bruteStep, bruteIterations)
     filePath = folderName + '/' + filename
-    params = "-t %s %d %d %d -bs -f %s"%(generator, initProblemSize ,bruteStep, bruteIterations, filePath)
+    params = "-t %s %d %d %d -bs -f %s"%(generator, initBruteProblemSize ,bruteStep, bruteIterations, filePath)
     exe = executable + ' ' + params
     
     os.system(exe)
