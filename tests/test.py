@@ -8,7 +8,7 @@ from multiprocessing import Process
 #mnijeszy krok dla algorytmu brutalnego
 bruteStep = 1
 #mniejsza liczba iteracji dla algorytmu brutalnego
-bruteIterations = 10
+bruteIterations = 6
 #początkowy rozmiar problemu dla algorytmu brutalnego
 initBruteProblemSize = 10
 
