@@ -82,7 +82,7 @@ int main(int argc, char * argv[])
     }
     /*
     * instance mode
-    * ./aal_cmyk -s <problem size> <generator type> -us -ss -bs -f <result file>
+    * ./aal_cmyk -s -gp/-gs/-gns <problem size> -us -ss -bs -f <result file>
     */
     else if(cmdOptionExists(argv, argv + argc, "-s"))
     {
@@ -295,7 +295,7 @@ int main(int argc, char * argv[])
     else if(cmdOptionExists(argv, argv + argc, "-h"))
     {
         std::cout << "Interactive mode:  " << "./aal_cmyk -i" << std::endl;
-        std::cout << "Instance mode:     " << "./aal_cmyk -s <problem size> <generator type> -us -ss -bs -f <result file>" << std::endl;
+        std::cout << "Instance mode:     " << "./aal_cmyk -s -gp/-gs/-gns <problem size> -us -ss -bs -f <result file>" << std::endl;
         std::cout << "Testing mode:      " << "./aal_cmyk -t -gp/-gs/-gns <problem size> <step> <number of iterations> -us -ss -bs -f <output file>" << std::endl;
     }
     return 0;
