@@ -1,5 +1,9 @@
 #!/usr/bin/python3
 
+#Name: test.py
+#Brief: Testing script
+#Author: Bartosz Świrta, Radosła Radziukiewicz
+
 import os
 import sys
 from typing import List

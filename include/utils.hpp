@@ -1,3 +1,14 @@
+/**
+ * @file utils.hpp
+ * @author Bartosz Świrta, Radosła Radziukiewicz
+ * @brief Declarations of varius utility functions.
+ * @version 1.0
+ * @date 2021-06-06
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
+
 #ifndef AAL_CMYK_UTILS_HPP
 #define AAL_CMYK_UTILS_HPP
 
@@ -17,10 +28,12 @@ std::optional<std::fstream> open_file(const std::string& filename);
 
 void print_diagnostics(size_t problemSize, const std::chrono::duration<double, std::milli>& time,
                        size_t numSteps, std::ostream &os);
+
 void print_diagnostics(const std::string& algName, const std::vector<char> &problemInstance,
                        const std::vector<char> &result, size_t problemSize,
                        const std::chrono::duration<double, std::milli>& time, size_t numSteps,
                        std::ostream &os);
+                       
 void print_interactive(const std::vector<char> &colors, uint marker, std::ostream &os);
 
 void print_vector(const std::vector<char> &data, std::ostream &os);

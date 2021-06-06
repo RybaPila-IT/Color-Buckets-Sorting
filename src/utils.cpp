@@ -1,3 +1,14 @@
+/**
+ * @file utils.cpp
+ * @author Bartosz Świrta, Radosła Radziukiewicz
+ * @brief Contains implmentations of functions declared in utils.hpp
+ * @version 1.0
+ * @date 2021-06-06
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
+
 #include "utils.hpp"
 #include "constants.hpp"
 #include <algorithm>

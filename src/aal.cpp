@@ -1,3 +1,14 @@
+/**
+ * @file aal.cpp
+ * @author Bartosz Świrta, Radosła Radziukiewicz
+ * @brief Main program file, which implement UI.
+ * @version 1.0
+ * @date 2021-06-06
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
+
 #include "data_generator.hpp"
 #include "alg_sort.hpp"
 #include "robot.hpp"

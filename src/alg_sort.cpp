@@ -1,3 +1,14 @@
+/**
+ * @file alg_sort.cpp
+ * @author Bartosz Świrta, Radosła Radziukiewicz
+ * @brief Contains implemntations of sort functions declared in alg_sort.hpp. Also contains proprietary functions used by soritng algorithms.
+ * @version 1.0
+ * @date 2021-06-06
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
+
 #include <iostream>
 #include <unordered_map>
 #include <map>

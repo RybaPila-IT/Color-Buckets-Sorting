@@ -1,3 +1,14 @@
+/**
+ * @file data_generator.hpp
+ * @author Bartosz Świrta, Radosła Radziukiewicz
+ * @brief Declaration of DataGenerator class hierarchy. All implemented generators are here.
+ * @version 1.0
+ * @date 2021-06-06
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
+
 #ifndef AAL_CMYK_DATA_GENERATOR_HPP
 #define AAL_CMYK_DATA_GENERATOR_HPP
 

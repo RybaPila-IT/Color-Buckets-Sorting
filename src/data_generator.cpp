@@ -1,3 +1,14 @@
+/**
+ * @file data_generator.cpp
+ * @author Bartosz Świrta, Radosła Radziukiewicz
+ * @brief Contains implmentations of methods of DataGenerator class hierarchy.
+ * @version 1.0
+ * @date 2021-06-06
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
+
 #include "data_generator.hpp"
 #include <algorithm>
 #include <iostream>
