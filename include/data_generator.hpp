@@ -1,14 +1,3 @@
-/**
- * @file data_generator.hpp
- * @author Bartosz Świrta, Radosła Radziukiewicz
- * @brief Declaration of DataGenerator class hierarchy. All implemented generators are here.
- * @version 1.0
- * @date 2021-06-06
- * 
- * @copyright Copyright (c) 2021
- * 
- */
-
 #ifndef AAL_CMYK_DATA_GENERATOR_HPP
 #define AAL_CMYK_DATA_GENERATOR_HPP
 
@@ -32,7 +21,6 @@ protected:
 
 public:
     DataGenerator();
-    virtual ~DataGenerator() = default;
     virtual colors generate(size_t length) = 0;
 };
 
@@ -47,7 +35,6 @@ private:
 public:
     ParametricGenerator();
     ParametricGenerator(double c_p, double m_p, double y_p, double k_p);
-    ~ParametricGenerator() = default;
     colors generate(size_t length) override;
 };
 
@@ -61,7 +48,6 @@ private:
 
 public:
     SubstringGenerator(double substr_prob, double mean_substr, double stddev_substr);
-    ~SubstringGenerator() = default;
     colors generate(size_t length) override;
 };
 
@@ -74,6 +60,5 @@ private:
 public:
     colors generate(size_t length) override;
 };
-
 
 #endif //AAL_CMYK_DATA_GENERATOR_HPP

@@ -1,25 +1,8 @@
-/**
- * @file robot.cpp
- * @author Bartosz Świrta, Radosła Radziukiewicz
- * @brief Contains implmentations of functions declared in robot.hpp
- * @version 1.0
- * @date 2021-06-06
- * 
- * @copyright Copyright (c) 2021
- * 
- */
-
 #include <stdexcept>
-#include <iostream>
 #include "robot.hpp"
 #include "constants.hpp"
-#include "utils.hpp"
 
 InstructionList::InstructionList(): current_instruction(0), instructions() {}
-
-bool InstructionList::empty() {
-    return instructions.empty();
-}
 
 void InstructionList::add_instruction(uint order) {
     instructions.push_back(order);
@@ -40,25 +23,20 @@ uint InstructionList::size() const {
     return instructions.size();
 }
 
-void Robot::sort(std::vector<char> &colors, InstructionList &instructions) {
-    while (instructions.instruction_left()) {
-        auto idx = instructions.get_next_instruction();
-
-        for (uint i = 0; i < PATTERN_LEN; i++)
-            colors.push_back(colors[idx + i]);
-
-        colors.erase(colors.begin() + idx, colors.begin() + idx + PATTERN_LEN);
+std::string InstructionList::to_string() const {
+    std::string result;
+    for (auto& order : instructions) {
+        std::string instruction_string = std::to_string(order);
+        result.append(instruction_string + " ");
     }
+    return result;
 }
-void Robot::sort_interactive(std::vector<char>& colors, InstructionList& instructions){
+
+void Robot::sort(std::vector<char>& colors, InstructionList instructions) {
     while (instructions.instruction_left()) {
         auto idx = instructions.get_next_instruction();
-
-        print_interactive(colors, idx, std::cout);
-
         for (uint i = 0; i < PATTERN_LEN; i++)
             colors.push_back(colors[idx + i]);
-
         colors.erase(colors.begin() + idx, colors.begin() + idx + PATTERN_LEN);
     }
 }

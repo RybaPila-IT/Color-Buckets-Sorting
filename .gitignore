@@ -39,6 +39,7 @@ cmake-build*
 bin/
 build/
 test_results/
+venv/
 
 #documentation
 doc/html
