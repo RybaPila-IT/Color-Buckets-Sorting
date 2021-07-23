@@ -1,4 +1,5 @@
 #include <stdexcept>
+
 #include "robot.hpp"
 #include "constants.hpp"
 

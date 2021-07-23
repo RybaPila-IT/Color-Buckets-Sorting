@@ -1,6 +1,8 @@
 #include <iostream>
 #include <chrono>
 #include <iomanip>
+#include <fstream>
+
 #include "data_generator.hpp"
 #include "alg_sort.hpp"
 #include "robot.hpp"
@@ -9,19 +11,45 @@ const char* LINE_ORNAMENT = "-----";
 const char* INTERACTIVE_MODE_NAME = "INTERACTIVE MODE";
 const char* AUTOMATIC_MODE_NAME = "AUTOMATIC MODE";
 
-void print_diagnostics(const std::string& alg_name, const std::string &pre_sorted,
+void print_diagnostics(std::ostream& output, const std::string& alg_name, const std::string &pre_sorted,
                        const std::string &sorted, size_t solution_size, const std::string& solution_string,
                        const std::chrono::duration<double, std::milli>& duration) {
     const uint print_width = 40;
-    std::cout << std::left << std::setw(print_width) << "Problem instance's size:" << sorted.size() << std::endl;
-    std::cout << std::left << std::setw(print_width) << "Algorithm's name:" << alg_name << std::endl;
-    std::cout << std::left << std::setw(print_width) << "Problem instance:" << pre_sorted << std::endl;
-    std::cout << std::left << std::setw(print_width) << "Result of algorithm's work:" << sorted << std::endl;
-    std::cout << std::left << std::setw(print_width) << "Solution moves amount:" << solution_size << std::endl;
-    std::cout << std::left << std::setw(print_width) << "Solution moves: " << solution_string << std::endl;
-    std::cout << std::left << std::setw(print_width) << "Time of algorithm's work (ms):" << duration.count() << std::endl;
-    std::cout << "\n\n";
+    output << std::left << std::setw(print_width) << "Problem instance's size:" << sorted.size() << std::endl;
+    output << std::left << std::setw(print_width) << "Algorithm's name:" << alg_name << std::endl;
+    output << std::left << std::setw(print_width) << "Problem instance:" << pre_sorted << std::endl;
+    output << std::left << std::setw(print_width) << "Result of algorithm's work:" << sorted << std::endl;
+    output << std::left << std::setw(print_width) << "Solution moves amount:" << solution_size << std::endl;
+    output << std::left << std::setw(print_width) << "Solution moves: " << solution_string << std::endl;
+    output << std::left << std::setw(print_width) << "Time of algorithm's work (ms):" << duration.count() << std::endl;
+    output << "\n\n";
 }
+
+bool want_to_save_to_file() {
+    std::string answer;
+    std::cout << "Do you want to save result to file? (Y/N)";
+    std::cin >> answer;
+    return answer == "y" || answer == "Y";
+}
+
+void save_diagnostics_to_file(const std::string& alg_name, const std::string &pre_sorted,
+                              const std::string &sorted, size_t solution_size, const std::string& solution_string,
+                              const std::chrono::duration<double, std::milli>& duration) {
+    std::string answer;
+    std::ofstream output;
+    std::cout << "Specify file name (without .txt ending): ";
+    std::cin >> answer;
+    answer = answer.append(".txt");
+    output.open(answer, std::ios::app);
+    if (output.is_open())
+        print_diagnostics(output, alg_name, pre_sorted, sorted, solution_size, solution_string, duration);
+    else {
+        std::cout << "WARNING: Unable to open file; Printing diagnostics to std::cout;" << std::endl;
+        print_diagnostics(std::cout, alg_name, pre_sorted, sorted, solution_size, solution_string, duration);
+    }
+    output.close();
+}
+
 
 void simulate_with_diagnostics(const std::string& algorithm_name, const std::vector<char>& colors,
                                const InstructionList& list,
@@ -32,11 +60,15 @@ void simulate_with_diagnostics(const std::string& algorithm_name, const std::vec
     auto solution_size = list.size();
     auto sorted_string = std::string(to_sort.begin(), to_sort.end());
     auto pre_sorted_string = std::string(colors.begin(), colors.end());
-    print_diagnostics(algorithm_name, pre_sorted_string, sorted_string, solution_size, list_string, duration);
+    if (want_to_save_to_file())
+        save_diagnostics_to_file(algorithm_name, pre_sorted_string,
+                                 sorted_string, solution_size, list_string, duration);
+    else
+        print_diagnostics(std::cout, algorithm_name, pre_sorted_string,
+                          sorted_string, solution_size, list_string, duration);
 }
 
-// Checks whether all colors are one of the C,M,Y,K pattern.
-bool input_string_colors_correctness(const std::string &data) {
+bool are_all_colors_CMYK(const std::string &data) {
     for(auto &color : data){
         if(std::find(PATTERN, PATTERN + 4, color) == std::end(PATTERN))
             return false;
@@ -51,11 +83,11 @@ void solve_problem_instance_with_algorithm(std::vector<char>& problem_instance, 
     std::cout << ask_prompt;
     std::cin >> response;
     if (response == "y" || response == "Y") {
+        std::cout << LINE_ORNAMENT << algorithm_name << LINE_ORNAMENT << std::endl;
         auto begin = std::chrono::high_resolution_clock::now();
         auto orders_list = algorithm(problem_instance);
         auto end = std::chrono::high_resolution_clock::now();
         auto duration = end - begin;
-        std::cout << LINE_ORNAMENT << algorithm_name << LINE_ORNAMENT << std::endl;
         simulate_with_diagnostics(algorithm_name, problem_instance, orders_list, duration);
     }
 }
@@ -79,7 +111,7 @@ void handle_interactive_mode() {
     std::cout << "Please, enter the problem instance:" << std::endl;
     std::cin >> response;
     std::transform(response.begin(), response.end(), response.begin(), ::toupper);
-    if (!input_string_colors_correctness(response)) {
+    if (!are_all_colors_CMYK(response)) {
         std::cout << "Provided response instance is incorrect (forbidden color occured). Terminating..." << std::endl;
         return;
     }

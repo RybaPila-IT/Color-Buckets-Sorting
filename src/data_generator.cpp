@@ -1,6 +1,7 @@
-#include "data_generator.hpp"
 #include <algorithm>
 #include <iostream>
+
+#include "data_generator.hpp"
 
 DataGenerator::DataGenerator(): random_device() {}
 
