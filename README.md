@@ -1,4 +1,4 @@
-# Robot Sorting Algorithms
+# Color Buckets Sorting Algorithms
 
 ---
 
